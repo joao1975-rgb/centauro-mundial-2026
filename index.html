@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mundial Centauro ADS 2026 · Calendario Junio · Julio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root{
+    --c-primary:#85439a; --c-primary-dark:#5a2a6b; --c-primary-light:#a965bb;
+    --c-secondary:#f79131; --c-secondary-dark:#d97516;
+    --c-bg:#fdfaff; --c-ink:#1c0d24; --c-ink-soft:#4a3556; --c-line:#e8d9f0;
+  }
+  html,body{ font-family:'Nunito','Arlon',system-ui,sans-serif; background:var(--c-bg); color:var(--c-ink); }
+  .brand-grad{ background:linear-gradient(135deg,var(--c-primary) 0%, var(--c-primary-dark) 55%, var(--c-secondary) 100%); }
+  .ribbon{ background:linear-gradient(90deg,var(--c-primary),var(--c-secondary)); color:white; padding:2px 10px; border-radius:999px; font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+  .logo-mark{ width:46px; height:46px; border-radius:14px; background:linear-gradient(135deg,var(--c-primary),var(--c-secondary)); display:flex; align-items:center; justify-content:center; color:white; font-weight:900; font-size:22px; box-shadow:0 8px 18px -8px rgba(133,67,154,.6); }
+  /* === Calendario === */
+  .cal-grid{ display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:8px; }
+  .cal-head{ font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:.12em; color:var(--c-primary); text-align:center; padding:6px 0; }
+  .day-cell{ background:white; border:1px solid var(--c-line); border-radius:14px; min-height:120px; padding:8px; position:relative; transition:all .2s ease; display:flex; flex-direction:column; }
+  .day-cell.empty{ background:#f7f1fb; opacity:.5; min-height:80px; }
+  .day-cell.out{ background:transparent; border:none; min-height:80px; }
+  .day-cell.has-match{ border-color:var(--c-primary-light); box-shadow:0 4px 12px -6px rgba(133,67,154,.25); }
+  .day-cell.today{ border:2px solid var(--c-secondary); box-shadow:0 0 0 3px rgba(247,145,49,.15); }
+  .day-num{ font-weight:900; color:var(--c-primary-dark); font-size:14px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center; }
+  .day-num .badge{ font-size:8px; font-weight:800; background:var(--c-secondary); color:white; padding:1px 6px; border-radius:999px; }
+  .mini-match{ display:flex; align-items:center; gap:4px; padding:3px 5px; border-radius:8px; background:#faf5fd; border:1px solid transparent; cursor:pointer; transition:all .15s ease; margin-bottom:3px; }
+  .mini-match:hover{ background:white; border-color:var(--c-primary); transform:translateX(1px); box-shadow:0 3px 8px -3px rgba(133,67,154,.4); }
+  .mini-match.played{ background:linear-gradient(90deg,#fff3e3,#faf5fd); border-color:var(--c-secondary); }
+  .mini-flags{ display:flex; flex-shrink:0; }
+  .mini-flag{ width:14px; height:14px; border-radius:50%; border:1.5px solid white; font-size:6px; font-weight:900; color:white; display:flex; align-items:center; justify-content:center; }
+  .mini-flag+.mini-flag{ margin-left:-6px; }
+  .mini-time{ font-size:9px; font-weight:900; color:var(--c-primary); margin-left:2px; }
+  .mini-score{ font-size:9px; font-weight:900; background:var(--c-primary); color:white; padding:1px 4px; border-radius:4px; margin-left:auto; }
+  /* === Cards === */
+  .match-card{ background:white; border:2px solid var(--c-line); border-radius:20px; padding:18px; transition:all .25s ease; }
+  .match-card.target{ border-color:var(--c-secondary); box-shadow:0 0 0 4px rgba(247,145,49,.2), 0 16px 32px -12px rgba(133,67,154,.35); transform:translateY(-2px); }
+  .match-card.played{ background:linear-gradient(135deg,#fff,#faf3ff); }
+  .crest-md{ width:48px; height:48px; border-radius:50%; border:3px solid white; box-shadow:0 4px 10px -3px rgba(0,0,0,.25); font-size:13px; font-weight:900; color:white; display:flex; align-items:center; justify-content:center; }
+  input.score-in{ width:60px; height:60px; font-size:30px; font-weight:900; text-align:center; border:3px solid var(--c-line); border-radius:14px; color:var(--c-primary-dark); }
+  input.score-in:focus{ outline:none; border-color:var(--c-secondary); box-shadow:0 0 0 4px rgba(247,145,49,.18); }
+  input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+  input[type=number]{ -moz-appearance:textfield; }
+  .origin-tag{ display:inline-flex; align-items:center; gap:4px; font-size:10px; background:#f3e8f7; color:var(--c-primary-dark); padding:2px 8px; border-radius:999px; font-weight:700; margin-top:4px; }
+  .pill{ transition:all .2s ease; }
+  .pill.active{ background:var(--c-primary); color:white; border-color:var(--c-primary); box-shadow:0 6px 18px -6px rgba(133,67,154,.6); }
+  .scroll-x{ scrollbar-width:thin; scrollbar-color:var(--c-primary-light) transparent; }
+  .scroll-x::-webkit-scrollbar{ height:8px; } .scroll-x::-webkit-scrollbar-thumb{ background:var(--c-primary-light); border-radius:999px; }
+</style>
+</head>
+<body class="antialiased">
+
+<header class="brand-grad text-white">
+  <div class="max-w-7xl mx-auto px-5 py-7 flex items-center justify-between flex-wrap gap-4">
+    <div class="flex items-center gap-3">
+      <div class="logo-mark" style="box-shadow:0 0 0 3px rgba(255,255,255,.4);">C</div>
+      <div>
+        <div class="text-[11px] uppercase tracking-[0.25em] text-white/80 font-bold">Centauro ADS presenta</div>
+        <h1 class="text-2xl md:text-3xl font-black tracking-tight">Mundial 2026 · Calendario Jun · Jul</h1>
+      </div>
+    </div>
+    <div class="text-right">
+      <div class="text-[11px] uppercase tracking-widest text-white/70 font-bold">Hora oficial</div>
+      <div class="text-xl font-black">Caracas <span style="color:#ffd9b3">UTC-4</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-8 space-y-10">
+
+  <!-- ============= CALENDARIO ============= -->
+  <section>
+    <div class="flex items-center gap-3 mb-4">
+      <div class="ribbon">Calendario</div>
+      <h2 class="text-2xl font-black text-[var(--c-primary-dark)]">Días con partidos</h2>
+      <span class="text-xs text-[var(--c-ink-soft)] hidden md:inline">· Click en un partido para abrir su tarjeta</span>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-8">
+      <div>
+        <div class="text-center mb-3"><span class="text-xl font-black text-[var(--c-primary)]">JUNIO</span> <span class="text-[var(--c-ink-soft)] font-bold">2026</span></div>
+        <div class="cal-grid mb-1">
+          <div class="cal-head">Lun</div><div class="cal-head">Mar</div><div class="cal-head">Mié</div><div class="cal-head">Jue</div><div class="cal-head">Vie</div><div class="cal-head">Sáb</div><div class="cal-head">Dom</div>
+        </div>
+        <div id="cal-jun" class="cal-grid"></div>
+      </div>
+      <div>
+        <div class="text-center mb-3"><span class="text-xl font-black text-[var(--c-primary)]">JULIO</span> <span class="text-[var(--c-ink-soft)] font-bold">2026</span></div>
+        <div class="cal-grid mb-1">
+          <div class="cal-head">Lun</div><div class="cal-head">Mar</div><div class="cal-head">Mié</div><div class="cal-head">Jue</div><div class="cal-head">Vie</div><div class="cal-head">Sáb</div><div class="cal-head">Dom</div>
+        </div>
+        <div id="cal-jul" class="cal-grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============= TARJETAS POR FASE ============= -->
+  <section>
+    <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+      <div class="flex items-center gap-3">
+        <div class="ribbon" style="background:var(--c-secondary)">Tarjetas</div>
+        <h2 class="text-2xl font-black text-[var(--c-primary-dark)]">Resultados por fase</h2>
+      </div>
+      <button id="btn-reset" class="text-xs font-bold px-4 py-2 rounded-full border-2 border-[var(--c-line)] hover:border-[var(--c-secondary)] hover:text-[var(--c-secondary-dark)] text-[var(--c-ink-soft)]">↺ Reiniciar resultados</button>
+    </div>
+
+    <div class="bg-white border border-[var(--c-line)] rounded-2xl sticky top-0 z-30 mb-4 shadow-sm">
+      <div id="phase-nav" class="flex gap-2 p-3 overflow-x-auto scroll-x"></div>
+    </div>
+
+    <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+  </section>
+
+</main>
+
+<footer class="brand-grad text-white/90 py-6 text-center mt-10">
+  <p class="text-sm font-bold">© 2026 Centauro ADS · Mundial FIFA 2026 · Identidad corporativa aplicada</p>
+</footer>
+
+<script>
+// ============================================================
+//  EQUIPOS
+// ============================================================
+const TEAMS = {
+  "México":{c1:"#006847",c2:"#ce1126",code:"MEX"},"EE. UU.":{c1:"#0a3161",c2:"#b31942",code:"USA"},
+  "Canadá":{c1:"#d52b1e",c2:"#1a1a1a",code:"CAN"},"España":{c1:"#aa151b",c2:"#f1bf00",code:"ESP"},
+  "Francia":{c1:"#002654",c2:"#ed2939",code:"FRA"},"Inglaterra":{c1:"#1a1a1a",c2:"#cf142b",code:"ENG"},
+  "Alemania":{c1:"#1a1a1a",c2:"#dd0000",code:"GER"},"Países Bajos":{c1:"#ae1c28",c2:"#21468b",code:"NED"},
+  "Portugal":{c1:"#046a38",c2:"#da291c",code:"POR"},"Bélgica":{c1:"#1a1a1a",c2:"#fdda24",code:"BEL"},
+  "Croacia":{c1:"#171796",c2:"#ff0000",code:"CRO"},"Suiza":{c1:"#d52b1e",c2:"#1a1a1a",code:"SUI"},
+  "Suecia":{c1:"#006aa7",c2:"#fecc00",code:"SWE"},"Polonia":{c1:"#1a1a1a",c2:"#dc143c",code:"POL"},
+  "Escocia":{c1:"#0065bd",c2:"#1a1a1a",code:"SCO"},"Rep. Checa":{c1:"#11457e",c2:"#d7141a",code:"CZE"},
+  "Turquía":{c1:"#e30a17",c2:"#1a1a1a",code:"TUR"},"Argentina":{c1:"#74acdf",c2:"#fcbf49",code:"ARG"},
+  "Brasil":{c1:"#009b3a",c2:"#fedf00",code:"BRA"},"Uruguay":{c1:"#0038a8",c2:"#fcd116",code:"URU"},
+  "Colombia":{c1:"#fcd116",c2:"#003893",code:"COL"},"Ecuador":{c1:"#ffd100",c2:"#0072ce",code:"ECU"},
+  "Paraguay":{c1:"#d52b1e",c2:"#0038a8",code:"PAR"},"Haití":{c1:"#00209f",c2:"#d21034",code:"HAI"},
+  "Curazao":{c1:"#002b7f",c2:"#f9e814",code:"CUW"},"Panamá":{c1:"#005293",c2:"#da121a",code:"PAN"},
+  "Costa Rica":{c1:"#002b7f",c2:"#ce2b37",code:"CRC"},"Jamaica":{c1:"#009b3a",c2:"#fed100",code:"JAM"},
+  "Marruecos":{c1:"#c1272d",c2:"#006233",code:"MAR"},"Egipto":{c1:"#ce1126",c2:"#1a1a1a",code:"EGY"},
+  "Senegal":{c1:"#00853f",c2:"#fdef42",code:"SEN"},"Costa de Marfil":{c1:"#f77f00",c2:"#009e60",code:"CIV"},
+  "Túnez":{c1:"#e70013",c2:"#1a1a1a",code:"TUN"},"Argelia":{c1:"#006233",c2:"#1a1a1a",code:"ALG"},
+  "Cabo Verde":{c1:"#003893",c2:"#cf2027",code:"CPV"},"Sudáfrica":{c1:"#007a4d",c2:"#ffb612",code:"RSA"},
+  "Ghana":{c1:"#ce1126",c2:"#fcd116",code:"GHA"},"Nigeria":{c1:"#008751",c2:"#1a1a1a",code:"NGA"},
+  "Japón":{c1:"#bc002d",c2:"#1a1a1a",code:"JPN"},"Corea del Sur":{c1:"#003478",c2:"#c60c30",code:"KOR"},
+  "Irán":{c1:"#239f40",c2:"#da0000",code:"IRN"},"Arabia Saudita":{c1:"#006c35",c2:"#1a1a1a",code:"KSA"},
+  "Catar":{c1:"#8a1538",c2:"#1a1a1a",code:"QAT"},"Australia":{c1:"#00843d",c2:"#ffcd00",code:"AUS"},
+  "Nva. Zelanda":{c1:"#1a1a1a",c2:"#cc142b",code:"NZL"},"Uzbekistán":{c1:"#1eb53a",c2:"#0099b5",code:"UZB"},
+  "Jordania":{c1:"#1a1a1a",c2:"#ce1126",code:"JOR"},"Bosnia":{c1:"#002395",c2:"#fecb00",code:"BIH"}
+};
+
+// ============================================================
+//  PARTIDOS · 1 cuadro de cada día relevante del Mundial 2026
+//  - Fase de grupos (jornadas 1 a 3)
+//  - 32avos, octavos, cuartos, semis, final (con cruces encadenados)
+// ============================================================
+const MATCHES = [
+  // ===== GRUPOS — Jornada 1 (11-17 jun) =====
+  {id:"G01",phase:"grupos",date:"2026-06-11",time:"12:00",t1:"México",t2:"Sudáfrica",g:"Grupo A",v:"Azteca, CDMX"},
+  {id:"G02",phase:"grupos",date:"2026-06-11",time:"16:00",t1:"Corea del Sur",t2:"Rep. Checa",g:"Grupo A",v:"Akron, Guadalajara"},
+  {id:"G03",phase:"grupos",date:"2026-06-12",time:"12:00",t1:"Canadá",t2:"Bosnia",g:"Grupo B",v:"BMO Field, Toronto"},
+  {id:"G04",phase:"grupos",date:"2026-06-12",time:"19:00",t1:"EE. UU.",t2:"Paraguay",g:"Grupo D",v:"SoFi, Los Ángeles"},
+  {id:"G05",phase:"grupos",date:"2026-06-13",time:"12:00",t1:"Catar",t2:"Suiza",g:"Grupo B",v:"Levi's, S. Francisco"},
+  {id:"G06",phase:"grupos",date:"2026-06-13",time:"15:00",t1:"Brasil",t2:"Marruecos",g:"Grupo C",v:"MetLife, NJ"},
+  {id:"G07",phase:"grupos",date:"2026-06-13",time:"19:00",t1:"Haití",t2:"Escocia",g:"Grupo C",v:"Gillette, Boston"},
+  {id:"G08",phase:"grupos",date:"2026-06-14",time:"12:00",t1:"Australia",t2:"Turquía",g:"Grupo D",v:"BC Place, Vancouver"},
+  {id:"G09",phase:"grupos",date:"2026-06-14",time:"15:00",t1:"Alemania",t2:"Curazao",g:"Grupo E",v:"NRG, Houston"},
+  {id:"G10",phase:"grupos",date:"2026-06-14",time:"18:00",t1:"Países Bajos",t2:"Japón",g:"Grupo F",v:"AT&T, Dallas"},
+  {id:"G11",phase:"grupos",date:"2026-06-14",time:"21:00",t1:"Costa de Marfil",t2:"Ecuador",g:"Grupo E",v:"Lincoln Fin., Filadelfia"},
+  {id:"G12",phase:"grupos",date:"2026-06-15",time:"12:00",t1:"Suecia",t2:"Túnez",g:"Grupo F",v:"BBVA, Monterrey"},
+  {id:"G13",phase:"grupos",date:"2026-06-15",time:"15:00",t1:"España",t2:"Cabo Verde",g:"Grupo H",v:"Mercedes-Benz, Atlanta"},
+  {id:"G14",phase:"grupos",date:"2026-06-15",time:"18:00",t1:"Bélgica",t2:"Egipto",g:"Grupo G",v:"Lumen, Seattle"},
+  {id:"G15",phase:"grupos",date:"2026-06-15",time:"21:00",t1:"Arabia Saudita",t2:"Uruguay",g:"Grupo H",v:"Hard Rock, Miami"},
+  {id:"G16",phase:"grupos",date:"2026-06-16",time:"12:00",t1:"Argentina",t2:"Senegal",g:"Grupo I",v:"Mercedes-Benz, Atlanta"},
+  {id:"G17",phase:"grupos",date:"2026-06-16",time:"15:00",t1:"Polonia",t2:"Jamaica",g:"Grupo I",v:"BBVA, Monterrey"},
+  {id:"G18",phase:"grupos",date:"2026-06-16",time:"19:00",t1:"Inglaterra",t2:"Nigeria",g:"Grupo J",v:"Arrowhead, Kansas City"},
+  {id:"G19",phase:"grupos",date:"2026-06-17",time:"12:00",t1:"Francia",t2:"Argelia",g:"Grupo K",v:"MetLife, NJ"},
+  {id:"G20",phase:"grupos",date:"2026-06-17",time:"15:00",t1:"Portugal",t2:"Panamá",g:"Grupo L",v:"Hard Rock, Miami"},
+  {id:"G21",phase:"grupos",date:"2026-06-17",time:"19:00",t1:"Croacia",t2:"Ghana",g:"Grupo J",v:"Lincoln Fin., Filadelfia"},
+
+  // ===== GRUPOS — Jornada 2 (18-23 jun) — algunos clave =====
+  {id:"G22",phase:"grupos",date:"2026-06-18",time:"12:00",t1:"Colombia",t2:"Costa Rica",g:"Grupo K",v:"NRG, Houston"},
+  {id:"G23",phase:"grupos",date:"2026-06-19",time:"15:00",t1:"México",t2:"Corea del Sur",g:"Grupo A",v:"Akron, Guadalajara"},
+  {id:"G24",phase:"grupos",date:"2026-06-20",time:"15:00",t1:"Brasil",t2:"Escocia",g:"Grupo C",v:"MetLife, NJ"},
+  {id:"G25",phase:"grupos",date:"2026-06-21",time:"15:00",t1:"Japón",t2:"Suecia",g:"Grupo F",v:"BBVA, Monterrey"},
+  {id:"G26",phase:"grupos",date:"2026-06-22",time:"18:00",t1:"Argentina",t2:"Polonia",g:"Grupo I",v:"SoFi, Los Ángeles"},
+  {id:"G27",phase:"grupos",date:"2026-06-23",time:"12:00",t1:"Inglaterra",t2:"Croacia",g:"Grupo J",v:"Arrowhead, Kansas City"},
+  {id:"G28",phase:"grupos",date:"2026-06-23",time:"18:00",t1:"Francia",t2:"Colombia",g:"Grupo K",v:"MetLife, NJ"},
+
+  // ===== GRUPOS — Jornada 3 (24-27 jun) =====
+  {id:"G29",phase:"grupos",date:"2026-06-24",time:"19:00",t1:"México",t2:"Rep. Checa",g:"Grupo A",v:"Azteca, CDMX"},
+  {id:"G30",phase:"grupos",date:"2026-06-25",time:"19:00",t1:"Brasil",t2:"Haití",g:"Grupo C",v:"MetLife, NJ"},
+  {id:"G31",phase:"grupos",date:"2026-06-26",time:"15:00",t1:"EE. UU.",t2:"Turquía",g:"Grupo D",v:"SoFi, Los Ángeles"},
+  {id:"G32",phase:"grupos",date:"2026-06-27",time:"16:00",t1:"España",t2:"Arabia Saudita",g:"Grupo H",v:"Mercedes-Benz, Atlanta"},
+
+  // ===== TREINTAYDOSAVOS — 30 jun a 3 jul =====
+  {id:"R1",phase:"32avos",date:"2026-06-30",time:"12:00",t1:"1°A",t2:"3°B/E/F",g:"32avos · M1",v:"BMO Field, Toronto"},
+  {id:"R2",phase:"32avos",date:"2026-06-30",time:"16:00",t1:"1°B",t2:"3°A/C/D",g:"32avos · M2",v:"AT&T, Dallas"},
+  {id:"R3",phase:"32avos",date:"2026-06-30",time:"20:00",t1:"2°A",t2:"2°C",g:"32avos · M3",v:"Azteca, CDMX"},
+  {id:"R4",phase:"32avos",date:"2026-07-01",time:"12:00",t1:"1°C",t2:"3°G/H/I",g:"32avos · M4",v:"Levi's, S. Francisco"},
+  {id:"R5",phase:"32avos",date:"2026-07-01",time:"16:00",t1:"1°D",t2:"3°A/B/E",g:"32avos · M5",v:"NRG, Houston"},
+  {id:"R6",phase:"32avos",date:"2026-07-01",time:"20:00",t1:"2°B",t2:"2°F",g:"32avos · M6",v:"BC Place, Vancouver"},
+  {id:"R7",phase:"32avos",date:"2026-07-02",time:"12:00",t1:"1°E",t2:"3°C/D/F",g:"32avos · M7",v:"Lincoln Fin., Filadelfia"},
+  {id:"R8",phase:"32avos",date:"2026-07-02",time:"16:00",t1:"1°F",t2:"3°G/J/K",g:"32avos · M8",v:"Lumen, Seattle"},
+
+  // ===== OCTAVOS — 6-9 jul (con encadenado) =====
+  {id:"O1",phase:"octavos",date:"2026-07-06",time:"12:00",t1From:"R1",t2From:"R2",g:"Octavos · OF1",v:"AT&T, Dallas"},
+  {id:"O2",phase:"octavos",date:"2026-07-06",time:"16:00",t1From:"R3",t2From:"R4",g:"Octavos · OF2",v:"SoFi, Los Ángeles"},
+  {id:"O3",phase:"octavos",date:"2026-07-07",time:"12:00",t1From:"R5",t2From:"R6",g:"Octavos · OF3",v:"Levi's, S. Francisco"},
+  {id:"O4",phase:"octavos",date:"2026-07-07",time:"16:00",t1From:"R7",t2From:"R8",g:"Octavos · OF4",v:"Lumen, Seattle"},
+
+  // ===== CUARTOS — 10-11 jul =====
+  {id:"Q1",phase:"cuartos",date:"2026-07-10",time:"12:00",t1From:"O1",t2From:"O2",g:"Cuartos · QF1",v:"MetLife, NJ"},
+  {id:"Q2",phase:"cuartos",date:"2026-07-10",time:"16:00",t1From:"O3",t2From:"O4",g:"Cuartos · QF2",v:"Azteca, CDMX"},
+
+  // ===== SEMIS — 14 jul =====
+  {id:"S1",phase:"semis",date:"2026-07-14",time:"15:00",t1From:"Q1",t2From:"Q2",g:"Semifinal · SF1",v:"AT&T, Dallas"},
+
+  // ===== FINAL — 19 jul =====
+  {id:"F1",phase:"final",date:"2026-07-19",time:"15:00",t1From:"S1",t2From:"S1",g:"Final · vs Semifinal restante",v:"MetLife, New Jersey"}
+];
+
+// Corregir el bug del R4 (tenía phase duplicada) — el objeto JS toma la última, queda phase:"32avos"
+// Se mantiene como recordatorio del cuidado al editar.
+
+// ============================================================
+//  FASES
+// ============================================================
+const PHASES = [
+  {id:"grupos",label:"Fase de Grupos"},
+  {id:"32avos",label:"32avos"},
+  {id:"octavos",label:"Octavos"},
+  {id:"cuartos",label:"Cuartos"},
+  {id:"semis",label:"Semifinales"},
+  {id:"final",label:"Final"}
+];
+
+let activePhase = "grupos";
+const STORAGE_KEY = "centauro-mundial-2026-v2";
+const results = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+
+const getTeam = (n) => TEAMS[n] || {c1:"#85439a",c2:"#f79131",code:"?"};
+const isReal = (n) => !!TEAMS[n];
+
+// Resolver equipo en base a partido fuente (para fases eliminatorias encadenadas)
+function resolveTeam(match, side){
+  const fromKey = side==='t1' ? match.t1From : match.t2From;
+  if(!fromKey) return side==='t1' ? match.t1 : match.t2;
+  const r = results[fromKey];
+  if(!r) return `Ganador ${fromKey}`;
+  if(r.s1>r.s2) return r.t1;
+  if(r.s2>r.s1) return r.t2;
+  return `Ganador ${fromKey}`;
+}
+
+// Texto de origen — a quién venció y por cuánto
+function originText(match, side){
+  const fromKey = side==='t1' ? match.t1From : match.t2From;
+  if(!fromKey) return null;
+  const r = results[fromKey];
+  if(!r) return `Por definir en ${fromKey}`;
+  const winner = r.s1>r.s2 ? r.t1 : (r.s2>r.s1 ? r.t2 : null);
+  if(!winner) return `Empate en ${fromKey}`;
+  const loser = winner===r.t1 ? r.t2 : r.t1;
+  const ws = winner===r.t1 ? r.s1 : r.s2;
+  const ls = winner===r.t1 ? r.s2 : r.s1;
+  return `Vino de vencer a ${loser} ${ws}-${ls}`;
+}
+
+// ============================================================
+//  CALENDARIO MENSUAL (Lun→Dom)
+//  Junio 2026: 1 = Lunes (offset 0). Julio 2026: 1 = Miércoles (offset 2).
+// ============================================================
+function renderMonth(containerId, year, month, daysInMonth, firstDayOffset){
+  const cont = document.getElementById(containerId);
+  let html = '';
+  // celdas vacías iniciales
+  for(let i=0;i<firstDayOffset;i++) html += `<div class="day-cell out"></div>`;
+  for(let d=1; d<=daysInMonth; d++){
+    const iso = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const matches = MATCHES.filter(m=>m.date===iso).sort((a,b)=>a.time.localeCompare(b.time));
+    const hasMatch = matches.length>0;
+    const cls = hasMatch ? 'has-match' : 'empty';
+    html += `<div class="day-cell ${cls}">
+      <div class="day-num">
+        <span>${d}</span>
+        ${hasMatch?`<span class="badge">${matches.length}</span>`:''}
+      </div>
+      ${matches.map(m=>miniMatch(m)).join('')}
+    </div>`;
+  }
+  cont.innerHTML = html;
+  cont.querySelectorAll('[data-go]').forEach(el=>el.onclick=()=>goToCard(el.dataset.go));
+}
+
+function miniMatch(m){
+  const r = results[m.id];
+  const t1Name = resolveTeam(m,'t1'), t2Name = resolveTeam(m,'t2');
+  const t1 = getTeam(t1Name), t2 = getTeam(t2Name);
+  const lbl1 = isReal(t1Name) ? t1.code : '?';
+  const lbl2 = isReal(t2Name) ? t2.code : '?';
+  return `<div class="mini-match ${r?'played':''}" data-go="${m.id}" title="${t1Name} vs ${t2Name}">
+    <div class="mini-flags">
+      <span class="mini-flag" style="background:linear-gradient(135deg,${t1.c1} 50%, ${t1.c2} 50%);">${lbl1}</span>
+      <span class="mini-flag" style="background:linear-gradient(135deg,${t2.c1} 50%, ${t2.c2} 50%);">${lbl2}</span>
+    </div>
+    <span class="mini-time">${m.time}</span>
+    ${r?`<span class="mini-score">${r.s1}-${r.s2}</span>`:''}
+  </div>`;
+}
+
+// ============================================================
+//  NAV DE FASES Y TARJETAS
+// ============================================================
+function renderNav(){
+  document.getElementById('phase-nav').innerHTML = PHASES.map(p=>`
+    <button data-phase="${p.id}" class="pill flex-shrink-0 px-4 py-2 text-sm font-bold rounded-full border-2 border-[var(--c-line)] text-[var(--c-ink-soft)] hover:border-[var(--c-primary)] ${activePhase===p.id?'active':''}">${p.label}</button>
+  `).join('');
+  document.querySelectorAll('#phase-nav button').forEach(b=>b.onclick=()=>{
+    activePhase=b.dataset.phase; renderNav(); renderCards();
+  });
+}
+
+function renderCards(highlightId){
+  const list = MATCHES.filter(m=>m.phase===activePhase);
+  const cont = document.getElementById('cards-container');
+  if(list.length===0){ cont.innerHTML=`<div class="col-span-full text-center text-[var(--c-ink-soft)] py-10">Sin partidos cargados.</div>`; return; }
+  cont.innerHTML = list.map(m=>cardHTML(m, highlightId===m.id)).join('');
+
+  // Listeners de inputs
+  list.forEach(m=>{
+    const c = document.getElementById(`card-${m.id}`);
+    if(!c) return;
+    const inputs = c.querySelectorAll('input.score-in');
+    const save = ()=>{
+      const s1 = parseInt(inputs[0].value), s2 = parseInt(inputs[1].value);
+      if(isNaN(s1)||isNaN(s2)){ delete results[m.id]; }
+      else {
+        results[m.id] = { s1, s2, t1: resolveTeam(m,'t1'), t2: resolveTeam(m,'t2'), phase:m.phase, g:m.g };
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(results));
+      renderMonth('cal-jun',2026,6,30,0);
+      renderMonth('cal-jul',2026,7,31,2);
+      renderCards();
+    };
+    inputs.forEach(i=>i.addEventListener('change', save));
+  });
+}
+
+function cardHTML(m, highlight){
+  const t1Name = resolveTeam(m,'t1'), t2Name = resolveTeam(m,'t2');
+  const t1 = getTeam(t1Name), t2 = getTeam(t2Name);
+  const r = results[m.id] || {};
+  const o1 = originText(m,'t1'), o2 = originText(m,'t2');
+  const winner = r.s1>r.s2 ? t1Name : (r.s2>r.s1 ? t2Name : null);
+  const dateFmt = new Date(m.date+'T00:00:00').toLocaleDateString('es-VE',{weekday:'long',day:'numeric',month:'long'});
+  return `
+    <div id="card-${m.id}" class="match-card ${highlight?'target':''} ${r.s1!=null?'played':''}">
+      <div class="flex justify-between items-center mb-3">
+        <div>
+          <div class="text-[10px] uppercase tracking-widest font-bold text-[var(--c-primary)]">${m.g}</div>
+          <div class="text-xs text-[var(--c-ink-soft)] capitalize">${dateFmt} · ${m.time} <strong>Caracas</strong></div>
+        </div>
+        <div class="text-[10px] text-right text-[var(--c-ink-soft)] max-w-[40%]">📍 ${m.v}</div>
+      </div>
+
+      <div class="flex justify-between items-end gap-3 mb-3">
+        <div class="flex-1 text-center">
+          <div class="crest-md mx-auto mb-1" style="background:linear-gradient(135deg,${t1.c1} 50%, ${t1.c2} 50%);">${isReal(t1Name)?t1.code:'?'}</div>
+          <div class="font-black text-sm text-[var(--c-ink)] truncate">${t1Name}</div>
+          ${o1?`<div class="origin-tag">↳ ${o1}</div>`:''}
+          <input type="number" min="0" max="20" class="score-in mt-2" value="${r.s1??''}" placeholder="-">
+        </div>
+        <div class="text-2xl font-black text-[var(--c-primary-light)] pb-3">VS</div>
+        <div class="flex-1 text-center">
+          <div class="crest-md mx-auto mb-1" style="background:linear-gradient(135deg,${t2.c1} 50%, ${t2.c2} 50%);">${isReal(t2Name)?t2.code:'?'}</div>
+          <div class="font-black text-sm text-[var(--c-ink)] truncate">${t2Name}</div>
+          ${o2?`<div class="origin-tag">↳ ${o2}</div>`:''}
+          <input type="number" min="0" max="20" class="score-in mt-2" value="${r.s2??''}" placeholder="-">
+        </div>
+      </div>
+
+      ${winner?`<div class="text-center text-xs font-black text-[var(--c-secondary-dark)] bg-orange-50 py-2 rounded-xl">🏆 ${winner} avanza a la siguiente fase</div>`:''}
+      ${r.s1!=null && !winner?`<div class="text-center text-xs font-bold text-[var(--c-ink-soft)] py-2">⚖️ Empate registrado</div>`:''}
+    </div>`;
+}
+
+// ============================================================
+//  CLICK desde calendario → ir a tarjeta
+// ============================================================
+function goToCard(id){
+  const m = MATCHES.find(x=>x.id===id);
+  if(!m) return;
+  activePhase = m.phase;
+  renderNav();
+  renderCards(id);
+  setTimeout(()=>{
+    const el = document.getElementById(`card-${id}`);
+    if(el){ el.scrollIntoView({behavior:'smooth', block:'center'}); }
+  }, 80);
+}
+
+document.getElementById('btn-reset').onclick = ()=>{
+  if(confirm("¿Reiniciar TODOS los resultados guardados?")){
+    Object.keys(results).forEach(k=>delete results[k]);
+    localStorage.removeItem(STORAGE_KEY);
+    renderMonth('cal-jun',2026,6,30,0);
+    renderMonth('cal-jul',2026,7,31,2);
+    renderCards();
+  }
+};
+
+// ============================================================
+//  INIT
+// ============================================================
+renderMonth('cal-jun',2026,6,30,0);  // junio: día 1 = lunes
+renderMonth('cal-jul',2026,7,31,2);  // julio: día 1 = miércoles
+renderNav();
+renderCards();
+</script>
+</body>
+</html>
