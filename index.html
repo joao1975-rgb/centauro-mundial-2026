@@ -3,53 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mundial Centauro ADS 2026 · Calendario Junio · Julio</title>
+<title>Mundial Centauro ADS 2026 · Calendario Oficial</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  :root{
-    --c-primary:#85439a; --c-primary-dark:#5a2a6b; --c-primary-light:#a965bb;
-    --c-secondary:#f79131; --c-secondary-dark:#d97516;
-    --c-bg:#fdfaff; --c-ink:#1c0d24; --c-ink-soft:#4a3556; --c-line:#e8d9f0;
-  }
-  html,body{ font-family:'Nunito','Arlon',system-ui,sans-serif; background:var(--c-bg); color:var(--c-ink); }
-  .brand-grad{ background:linear-gradient(135deg,var(--c-primary) 0%, var(--c-primary-dark) 55%, var(--c-secondary) 100%); }
-  .ribbon{ background:linear-gradient(90deg,var(--c-primary),var(--c-secondary)); color:white; padding:2px 10px; border-radius:999px; font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
-  .logo-mark{ width:46px; height:46px; border-radius:14px; background:linear-gradient(135deg,var(--c-primary),var(--c-secondary)); display:flex; align-items:center; justify-content:center; color:white; font-weight:900; font-size:22px; box-shadow:0 8px 18px -8px rgba(133,67,154,.6); }
-  /* === Calendario === */
-  .cal-grid{ display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:8px; }
-  .cal-head{ font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:.12em; color:var(--c-primary); text-align:center; padding:6px 0; }
-  .day-cell{ background:white; border:1px solid var(--c-line); border-radius:14px; min-height:120px; padding:8px; position:relative; transition:all .2s ease; display:flex; flex-direction:column; }
-  .day-cell.empty{ background:#f7f1fb; opacity:.5; min-height:80px; }
-  .day-cell.out{ background:transparent; border:none; min-height:80px; }
-  .day-cell.has-match{ border-color:var(--c-primary-light); box-shadow:0 4px 12px -6px rgba(133,67,154,.25); }
-  .day-cell.today{ border:2px solid var(--c-secondary); box-shadow:0 0 0 3px rgba(247,145,49,.15); }
-  .day-num{ font-weight:900; color:var(--c-primary-dark); font-size:14px; margin-bottom:4px; display:flex; justify-content:space-between; align-items:center; }
-  .day-num .badge{ font-size:8px; font-weight:800; background:var(--c-secondary); color:white; padding:1px 6px; border-radius:999px; }
-  .mini-match{ display:flex; align-items:center; gap:4px; padding:3px 5px; border-radius:8px; background:#faf5fd; border:1px solid transparent; cursor:pointer; transition:all .15s ease; margin-bottom:3px; }
-  .mini-match:hover{ background:white; border-color:var(--c-primary); transform:translateX(1px); box-shadow:0 3px 8px -3px rgba(133,67,154,.4); }
-  .mini-match.played{ background:linear-gradient(90deg,#fff3e3,#faf5fd); border-color:var(--c-secondary); }
-  .mini-flags{ display:flex; flex-shrink:0; }
-  .mini-flag{ width:14px; height:14px; border-radius:50%; border:1.5px solid white; font-size:6px; font-weight:900; color:white; display:flex; align-items:center; justify-content:center; }
-  .mini-flag+.mini-flag{ margin-left:-6px; }
-  .mini-time{ font-size:9px; font-weight:900; color:var(--c-primary); margin-left:2px; }
-  .mini-score{ font-size:9px; font-weight:900; background:var(--c-primary); color:white; padding:1px 4px; border-radius:4px; margin-left:auto; }
-  /* === Cards === */
-  .match-card{ background:white; border:2px solid var(--c-line); border-radius:20px; padding:18px; transition:all .25s ease; }
-  .match-card.target{ border-color:var(--c-secondary); box-shadow:0 0 0 4px rgba(247,145,49,.2), 0 16px 32px -12px rgba(133,67,154,.35); transform:translateY(-2px); }
-  .match-card.played{ background:linear-gradient(135deg,#fff,#faf3ff); }
-  .crest-md{ width:48px; height:48px; border-radius:50%; border:3px solid white; box-shadow:0 4px 10px -3px rgba(0,0,0,.25); font-size:13px; font-weight:900; color:white; display:flex; align-items:center; justify-content:center; }
-  input.score-in{ width:60px; height:60px; font-size:30px; font-weight:900; text-align:center; border:3px solid var(--c-line); border-radius:14px; color:var(--c-primary-dark); }
-  input.score-in:focus{ outline:none; border-color:var(--c-secondary); box-shadow:0 0 0 4px rgba(247,145,49,.18); }
-  input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
-  input[type=number]{ -moz-appearance:textfield; }
-  .origin-tag{ display:inline-flex; align-items:center; gap:4px; font-size:10px; background:#f3e8f7; color:var(--c-primary-dark); padding:2px 8px; border-radius:999px; font-weight:700; margin-top:4px; }
-  .pill{ transition:all .2s ease; }
-  .pill.active{ background:var(--c-primary); color:white; border-color:var(--c-primary); box-shadow:0 6px 18px -6px rgba(133,67,154,.6); }
-  .scroll-x{ scrollbar-width:thin; scrollbar-color:var(--c-primary-light) transparent; }
-  .scroll-x::-webkit-scrollbar{ height:8px; } .scroll-x::-webkit-scrollbar-thumb{ background:var(--c-primary-light); border-radius:999px; }
+:root{--c-primary:#85439a;--c-primary-dark:#5a2a6b;--c-primary-light:#a965bb;--c-secondary:#f79131;--c-secondary-dark:#d97516;--c-bg:#fdfaff;--c-ink:#1c0d24;--c-ink-soft:#4a3556;--c-line:#e8d9f0;}
+html,body{font-family:'Nunito','Arlon',system-ui,sans-serif;background:var(--c-bg);color:var(--c-ink);}
+.brand-grad{background:linear-gradient(135deg,var(--c-primary) 0%,var(--c-primary-dark) 55%,var(--c-secondary) 100%);}
+.ribbon{background:linear-gradient(90deg,var(--c-primary),var(--c-secondary));color:white;padding:2px 10px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
+.logo-mark{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--c-primary),var(--c-secondary));display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:22px;box-shadow:0 8px 18px -8px rgba(133,67,154,.6);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;}
+.cal-head{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.12em;color:var(--c-primary);text-align:center;padding:6px 0;}
+.day-cell{background:white;border:1px solid var(--c-line);border-radius:14px;min-height:120px;padding:8px;position:relative;display:flex;flex-direction:column;}
+.day-cell.empty{background:#f7f1fb;opacity:.5;min-height:80px;}
+.day-cell.out{background:transparent;border:none;min-height:80px;}
+.day-cell.has-match{border-color:var(--c-primary-light);box-shadow:0 4px 12px -6px rgba(133,67,154,.25);}
+.day-num{font-weight:900;color:var(--c-primary-dark);font-size:14px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center;}
+.day-num .badge{font-size:8px;font-weight:800;background:var(--c-secondary);color:white;padding:1px 6px;border-radius:999px;}
+.mini-match{display:flex;align-items:center;gap:4px;padding:3px 5px;border-radius:8px;background:#faf5fd;border:1px solid transparent;cursor:pointer;margin-bottom:3px;transition:all .15s;}
+.mini-match:hover{background:white;border-color:var(--c-primary);transform:translateX(1px);box-shadow:0 3px 8px -3px rgba(133,67,154,.4);}
+.mini-match.played{background:linear-gradient(90deg,#fff3e3,#faf5fd);border-color:var(--c-secondary);}
+.mini-match.live{background:linear-gradient(90deg,#ffe0e0,#faf5fd);border-color:#dc2626;}
+.mini-flags{display:flex;flex-shrink:0;}
+.mini-flag{width:14px;height:14px;border-radius:50%;border:1.5px solid white;font-size:6px;font-weight:900;color:white;display:flex;align-items:center;justify-content:center;}
+.mini-flag+.mini-flag{margin-left:-6px;}
+.mini-time{font-size:9px;font-weight:900;color:var(--c-primary);margin-left:2px;}
+.mini-score{font-size:9px;font-weight:900;background:var(--c-primary);color:white;padding:1px 4px;border-radius:4px;margin-left:auto;}
+.match-card{background:white;border:2px solid var(--c-line);border-radius:20px;padding:18px;transition:all .25s;cursor:pointer;}
+.match-card:hover{border-color:var(--c-primary-light);transform:translateY(-2px);box-shadow:0 14px 32px -16px rgba(133,67,154,.45);}
+.match-card.target{border-color:var(--c-secondary);box-shadow:0 0 0 4px rgba(247,145,49,.2),0 16px 32px -12px rgba(133,67,154,.35);}
+.match-card.played{background:linear-gradient(135deg,#fff,#faf3ff);}
+.crest-md{width:48px;height:48px;border-radius:50%;border:3px solid white;box-shadow:0 4px 10px -3px rgba(0,0,0,.25);font-size:13px;font-weight:900;color:white;display:flex;align-items:center;justify-content:center;}
+.crest-lg{width:72px;height:72px;border-radius:50%;border:4px solid white;box-shadow:0 8px 18px -6px rgba(0,0,0,.3);font-size:20px;font-weight:900;color:white;display:flex;align-items:center;justify-content:center;}
+.origin-tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;background:#f3e8f7;color:var(--c-primary-dark);padding:2px 8px;border-radius:999px;font-weight:700;margin-top:4px;}
+.pill{transition:all .2s;}
+.pill.active{background:var(--c-primary);color:white;border-color:var(--c-primary);box-shadow:0 6px 18px -6px rgba(133,67,154,.6);}
+.modal-bg{background:rgba(28,13,36,.72);backdrop-filter:blur(6px);}
+.timeline-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed var(--c-line);}
+.timeline-row:last-child{border-bottom:none;}
+.evt-icon{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;}
+.evt-goal{background:#dcfce7;color:#065f46;}.evt-yellow{background:#fef3c7;color:#854d0e;}
+.evt-red{background:#fee2e2;color:#991b1b;}.evt-sub{background:#dbeafe;color:#1e40af;}
+.admin-badge{position:fixed;bottom:18px;right:18px;background:var(--c-secondary);color:white;font-weight:900;font-size:11px;padding:8px 14px;border-radius:999px;box-shadow:0 8px 22px -8px rgba(247,145,49,.6);cursor:pointer;z-index:40;letter-spacing:.05em;}
+.admin-badge.on{background:linear-gradient(90deg,#dc2626,#ea580c);}
+.btn-prim{background:linear-gradient(135deg,var(--c-primary),var(--c-primary-dark));color:white;font-weight:900;padding:10px 18px;border-radius:14px;font-size:13px;box-shadow:0 6px 16px -6px rgba(133,67,154,.5);}
+.btn-prim:hover{transform:translateY(-1px);}.btn-prim:disabled{opacity:.4;cursor:not-allowed;}
+.btn-sec{background:white;color:var(--c-primary-dark);font-weight:900;padding:10px 18px;border-radius:14px;font-size:13px;border:2px solid var(--c-line);}
+.btn-sec:hover{border-color:var(--c-primary);}
+.btn-orange{background:linear-gradient(135deg,var(--c-secondary),var(--c-secondary-dark));color:white;font-weight:900;padding:10px 18px;border-radius:14px;font-size:13px;}
+input.fld,select.fld{width:100%;padding:8px 12px;border:2px solid var(--c-line);border-radius:10px;font-weight:600;color:var(--c-ink);font-size:13px;background:white;}
+input.fld:focus,select.fld:focus{outline:none;border-color:var(--c-primary);}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+input[type=number]{-moz-appearance:textfield;}
+.scroll-x::-webkit-scrollbar{height:8px;}.scroll-x::-webkit-scrollbar-thumb{background:var(--c-primary-light);border-radius:999px;}
+.tag-live{background:#dc2626;color:white;font-size:9px;font-weight:900;padding:2px 6px;border-radius:6px;letter-spacing:.08em;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
 </style>
 </head>
 <body class="antialiased">
@@ -60,7 +70,7 @@
       <div class="logo-mark" style="box-shadow:0 0 0 3px rgba(255,255,255,.4);">C</div>
       <div>
         <div class="text-[11px] uppercase tracking-[0.25em] text-white/80 font-bold">Centauro ADS presenta</div>
-        <h1 class="text-2xl md:text-3xl font-black tracking-tight">Mundial 2026 · Calendario Jun · Jul</h1>
+        <h1 class="text-2xl md:text-3xl font-black tracking-tight">Mundial FIFA 2026</h1>
       </div>
     </div>
     <div class="text-right">
@@ -71,60 +81,95 @@
 </header>
 
 <main class="max-w-7xl mx-auto px-4 py-8 space-y-10">
-
-  <!-- ============= CALENDARIO ============= -->
   <section>
     <div class="flex items-center gap-3 mb-4">
       <div class="ribbon">Calendario</div>
-      <h2 class="text-2xl font-black text-[var(--c-primary-dark)]">Días con partidos</h2>
-      <span class="text-xs text-[var(--c-ink-soft)] hidden md:inline">· Click en un partido para abrir su tarjeta</span>
+      <h2 class="text-2xl font-black text-[var(--c-primary-dark)]">Junio · Julio 2026</h2>
+      <span id="conn-state" class="text-xs font-bold ml-auto"></span>
     </div>
-
     <div class="grid lg:grid-cols-2 gap-8">
       <div>
-        <div class="text-center mb-3"><span class="text-xl font-black text-[var(--c-primary)]">JUNIO</span> <span class="text-[var(--c-ink-soft)] font-bold">2026</span></div>
-        <div class="cal-grid mb-1">
-          <div class="cal-head">Lun</div><div class="cal-head">Mar</div><div class="cal-head">Mié</div><div class="cal-head">Jue</div><div class="cal-head">Vie</div><div class="cal-head">Sáb</div><div class="cal-head">Dom</div>
-        </div>
+        <div class="text-center mb-3"><span class="text-xl font-black text-[var(--c-primary)]">JUNIO</span></div>
+        <div class="cal-grid mb-1"><div class="cal-head">Lun</div><div class="cal-head">Mar</div><div class="cal-head">Mié</div><div class="cal-head">Jue</div><div class="cal-head">Vie</div><div class="cal-head">Sáb</div><div class="cal-head">Dom</div></div>
         <div id="cal-jun" class="cal-grid"></div>
       </div>
       <div>
-        <div class="text-center mb-3"><span class="text-xl font-black text-[var(--c-primary)]">JULIO</span> <span class="text-[var(--c-ink-soft)] font-bold">2026</span></div>
-        <div class="cal-grid mb-1">
-          <div class="cal-head">Lun</div><div class="cal-head">Mar</div><div class="cal-head">Mié</div><div class="cal-head">Jue</div><div class="cal-head">Vie</div><div class="cal-head">Sáb</div><div class="cal-head">Dom</div>
-        </div>
+        <div class="text-center mb-3"><span class="text-xl font-black text-[var(--c-primary)]">JULIO</span></div>
+        <div class="cal-grid mb-1"><div class="cal-head">Lun</div><div class="cal-head">Mar</div><div class="cal-head">Mié</div><div class="cal-head">Jue</div><div class="cal-head">Vie</div><div class="cal-head">Sáb</div><div class="cal-head">Dom</div></div>
         <div id="cal-jul" class="cal-grid"></div>
       </div>
     </div>
   </section>
 
-  <!-- ============= TARJETAS POR FASE ============= -->
   <section>
-    <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
-      <div class="flex items-center gap-3">
-        <div class="ribbon" style="background:var(--c-secondary)">Tarjetas</div>
-        <h2 class="text-2xl font-black text-[var(--c-primary-dark)]">Resultados por fase</h2>
-      </div>
-      <button id="btn-reset" class="text-xs font-bold px-4 py-2 rounded-full border-2 border-[var(--c-line)] hover:border-[var(--c-secondary)] hover:text-[var(--c-secondary-dark)] text-[var(--c-ink-soft)]">↺ Reiniciar resultados</button>
+    <div class="flex items-center gap-3 mb-4">
+      <div class="ribbon" style="background:var(--c-secondary)">Tarjetas</div>
+      <h2 class="text-2xl font-black text-[var(--c-primary-dark)]">Resultados por fase</h2>
     </div>
-
-    <div class="bg-white border border-[var(--c-line)] rounded-2xl sticky top-0 z-30 mb-4 shadow-sm">
+    <div class="bg-white border border-[var(--c-line)] rounded-2xl mb-4 shadow-sm">
       <div id="phase-nav" class="flex gap-2 p-3 overflow-x-auto scroll-x"></div>
     </div>
-
     <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
   </section>
 
+  <section id="standings-section" class="hidden">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="ribbon">Tabla</div>
+      <h2 class="text-2xl font-black text-[var(--c-primary-dark)]">Posiciones por grupo</h2>
+    </div>
+    <div id="standings-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  </section>
 </main>
 
 <footer class="brand-grad text-white/90 py-6 text-center mt-10">
-  <p class="text-sm font-bold">© 2026 Centauro ADS · Mundial FIFA 2026 · Identidad corporativa aplicada</p>
+  <p class="text-sm font-bold">© 2026 Centauro ADS · Mundial FIFA · Datos en tiempo real con Firebase</p>
 </footer>
 
-<script>
-// ============================================================
-//  EQUIPOS
-// ============================================================
+<div id="admin-btn" class="admin-badge">🔒 Admin</div>
+
+<div id="login-modal" class="fixed inset-0 modal-bg z-50 hidden items-center justify-center p-4">
+  <div class="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl">
+    <div class="brand-grad px-6 py-4 text-white"><div class="font-black text-lg">Acceso admin</div><div class="text-xs opacity-80">Solo personal autorizado</div></div>
+    <div class="p-6">
+      <input id="login-pwd" type="password" placeholder="Contraseña" class="fld mb-3" autocomplete="off">
+      <div id="login-err" class="text-xs text-red-600 font-bold mb-3 hidden">Contraseña incorrecta</div>
+      <div class="flex gap-2"><button id="login-cancel" class="btn-sec flex-1">Cancelar</button><button id="login-submit" class="btn-prim flex-1">Entrar</button></div>
+    </div>
+  </div>
+</div>
+
+<div id="match-modal" class="fixed inset-0 modal-bg z-50 hidden items-center justify-center p-4 overflow-y-auto">
+  <div class="bg-white rounded-3xl w-full max-w-2xl my-8 overflow-hidden shadow-2xl">
+    <div class="brand-grad px-6 py-4 text-white flex justify-between items-start">
+      <div class="min-w-0 flex-1">
+        <div id="mm-phase" class="text-[10px] uppercase tracking-widest font-bold opacity-80"></div>
+        <div id="mm-title" class="font-black text-lg"></div>
+        <div id="mm-meta" class="text-xs opacity-90 mt-1"></div>
+      </div>
+      <button id="mm-close" class="w-9 h-9 rounded-full bg-white/15 hover:bg-white/30 text-white text-xl font-bold flex-shrink-0">×</button>
+    </div>
+    <div class="p-6" id="mm-body"></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection, addDoc, getDocs, query, where, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC9Qyj5btr56YRLlwf4afzAl9371N8Xgi0",
+  authDomain: "centauro-mundial-2026.firebaseapp.com",
+  projectId: "centauro-mundial-2026",
+  storageBucket: "centauro-mundial-2026.firebasestorage.app",
+  messagingSenderId: "897064640862",
+  appId: "1:897064640862:web:6236c593c468af9c1b2fcf"
+};
+const FOOTBALL_API_KEY = "740bcff88e6b477284c84dd4ba4fafbb";
+const ADMIN_HASH = "23d7676b6fec95ed768106f84de91b5a373952d533e7ff6acec17779fba51c8c";
+
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
+
 const TEAMS = {
   "México":{c1:"#006847",c2:"#ce1126",code:"MEX"},"EE. UU.":{c1:"#0a3161",c2:"#b31942",code:"USA"},
   "Canadá":{c1:"#d52b1e",c2:"#1a1a1a",code:"CAN"},"España":{c1:"#aa151b",c2:"#f1bf00",code:"ESP"},
@@ -152,13 +197,7 @@ const TEAMS = {
   "Jordania":{c1:"#1a1a1a",c2:"#ce1126",code:"JOR"},"Bosnia":{c1:"#002395",c2:"#fecb00",code:"BIH"}
 };
 
-// ============================================================
-//  PARTIDOS · 1 cuadro de cada día relevante del Mundial 2026
-//  - Fase de grupos (jornadas 1 a 3)
-//  - 32avos, octavos, cuartos, semis, final (con cruces encadenados)
-// ============================================================
 const MATCHES = [
-  // ===== GRUPOS — Jornada 1 (11-17 jun) =====
   {id:"G01",phase:"grupos",date:"2026-06-11",time:"12:00",t1:"México",t2:"Sudáfrica",g:"Grupo A",v:"Azteca, CDMX"},
   {id:"G02",phase:"grupos",date:"2026-06-11",time:"16:00",t1:"Corea del Sur",t2:"Rep. Checa",g:"Grupo A",v:"Akron, Guadalajara"},
   {id:"G03",phase:"grupos",date:"2026-06-12",time:"12:00",t1:"Canadá",t2:"Bosnia",g:"Grupo B",v:"BMO Field, Toronto"},
@@ -180,8 +219,6 @@ const MATCHES = [
   {id:"G19",phase:"grupos",date:"2026-06-17",time:"12:00",t1:"Francia",t2:"Argelia",g:"Grupo K",v:"MetLife, NJ"},
   {id:"G20",phase:"grupos",date:"2026-06-17",time:"15:00",t1:"Portugal",t2:"Panamá",g:"Grupo L",v:"Hard Rock, Miami"},
   {id:"G21",phase:"grupos",date:"2026-06-17",time:"19:00",t1:"Croacia",t2:"Ghana",g:"Grupo J",v:"Lincoln Fin., Filadelfia"},
-
-  // ===== GRUPOS — Jornada 2 (18-23 jun) — algunos clave =====
   {id:"G22",phase:"grupos",date:"2026-06-18",time:"12:00",t1:"Colombia",t2:"Costa Rica",g:"Grupo K",v:"NRG, Houston"},
   {id:"G23",phase:"grupos",date:"2026-06-19",time:"15:00",t1:"México",t2:"Corea del Sur",g:"Grupo A",v:"Akron, Guadalajara"},
   {id:"G24",phase:"grupos",date:"2026-06-20",time:"15:00",t1:"Brasil",t2:"Escocia",g:"Grupo C",v:"MetLife, NJ"},
@@ -189,14 +226,10 @@ const MATCHES = [
   {id:"G26",phase:"grupos",date:"2026-06-22",time:"18:00",t1:"Argentina",t2:"Polonia",g:"Grupo I",v:"SoFi, Los Ángeles"},
   {id:"G27",phase:"grupos",date:"2026-06-23",time:"12:00",t1:"Inglaterra",t2:"Croacia",g:"Grupo J",v:"Arrowhead, Kansas City"},
   {id:"G28",phase:"grupos",date:"2026-06-23",time:"18:00",t1:"Francia",t2:"Colombia",g:"Grupo K",v:"MetLife, NJ"},
-
-  // ===== GRUPOS — Jornada 3 (24-27 jun) =====
   {id:"G29",phase:"grupos",date:"2026-06-24",time:"19:00",t1:"México",t2:"Rep. Checa",g:"Grupo A",v:"Azteca, CDMX"},
   {id:"G30",phase:"grupos",date:"2026-06-25",time:"19:00",t1:"Brasil",t2:"Haití",g:"Grupo C",v:"MetLife, NJ"},
   {id:"G31",phase:"grupos",date:"2026-06-26",time:"15:00",t1:"EE. UU.",t2:"Turquía",g:"Grupo D",v:"SoFi, Los Ángeles"},
   {id:"G32",phase:"grupos",date:"2026-06-27",time:"16:00",t1:"España",t2:"Arabia Saudita",g:"Grupo H",v:"Mercedes-Benz, Atlanta"},
-
-  // ===== TREINTAYDOSAVOS — 30 jun a 3 jul =====
   {id:"R1",phase:"32avos",date:"2026-06-30",time:"12:00",t1:"1°A",t2:"3°B/E/F",g:"32avos · M1",v:"BMO Field, Toronto"},
   {id:"R2",phase:"32avos",date:"2026-06-30",time:"16:00",t1:"1°B",t2:"3°A/C/D",g:"32avos · M2",v:"AT&T, Dallas"},
   {id:"R3",phase:"32avos",date:"2026-06-30",time:"20:00",t1:"2°A",t2:"2°C",g:"32avos · M3",v:"Azteca, CDMX"},
@@ -205,221 +238,388 @@ const MATCHES = [
   {id:"R6",phase:"32avos",date:"2026-07-01",time:"20:00",t1:"2°B",t2:"2°F",g:"32avos · M6",v:"BC Place, Vancouver"},
   {id:"R7",phase:"32avos",date:"2026-07-02",time:"12:00",t1:"1°E",t2:"3°C/D/F",g:"32avos · M7",v:"Lincoln Fin., Filadelfia"},
   {id:"R8",phase:"32avos",date:"2026-07-02",time:"16:00",t1:"1°F",t2:"3°G/J/K",g:"32avos · M8",v:"Lumen, Seattle"},
-
-  // ===== OCTAVOS — 6-9 jul (con encadenado) =====
   {id:"O1",phase:"octavos",date:"2026-07-06",time:"12:00",t1From:"R1",t2From:"R2",g:"Octavos · OF1",v:"AT&T, Dallas"},
   {id:"O2",phase:"octavos",date:"2026-07-06",time:"16:00",t1From:"R3",t2From:"R4",g:"Octavos · OF2",v:"SoFi, Los Ángeles"},
   {id:"O3",phase:"octavos",date:"2026-07-07",time:"12:00",t1From:"R5",t2From:"R6",g:"Octavos · OF3",v:"Levi's, S. Francisco"},
   {id:"O4",phase:"octavos",date:"2026-07-07",time:"16:00",t1From:"R7",t2From:"R8",g:"Octavos · OF4",v:"Lumen, Seattle"},
-
-  // ===== CUARTOS — 10-11 jul =====
   {id:"Q1",phase:"cuartos",date:"2026-07-10",time:"12:00",t1From:"O1",t2From:"O2",g:"Cuartos · QF1",v:"MetLife, NJ"},
   {id:"Q2",phase:"cuartos",date:"2026-07-10",time:"16:00",t1From:"O3",t2From:"O4",g:"Cuartos · QF2",v:"Azteca, CDMX"},
-
-  // ===== SEMIS — 14 jul =====
   {id:"S1",phase:"semis",date:"2026-07-14",time:"15:00",t1From:"Q1",t2From:"Q2",g:"Semifinal · SF1",v:"AT&T, Dallas"},
-
-  // ===== FINAL — 19 jul =====
-  {id:"F1",phase:"final",date:"2026-07-19",time:"15:00",t1From:"S1",t2From:"S1",g:"Final · vs Semifinal restante",v:"MetLife, New Jersey"}
+  {id:"F1",phase:"final",date:"2026-07-19",time:"15:00",t1From:"S1",t2From:"S1",g:"Gran Final",v:"MetLife, New Jersey"}
 ];
 
-// Corregir el bug del R4 (tenía phase duplicada) — el objeto JS toma la última, queda phase:"32avos"
-// Se mantiene como recordatorio del cuidado al editar.
-
-// ============================================================
-//  FASES
-// ============================================================
 const PHASES = [
-  {id:"grupos",label:"Fase de Grupos"},
-  {id:"32avos",label:"32avos"},
-  {id:"octavos",label:"Octavos"},
-  {id:"cuartos",label:"Cuartos"},
-  {id:"semis",label:"Semifinales"},
-  {id:"final",label:"Final"}
+  {id:"grupos",label:"Fase de Grupos"},{id:"32avos",label:"32avos"},
+  {id:"octavos",label:"Octavos"},{id:"cuartos",label:"Cuartos"},
+  {id:"semis",label:"Semifinales"},{id:"final",label:"Final"}
 ];
 
-let activePhase = "grupos";
-const STORAGE_KEY = "centauro-mundial-2026-v2";
-const results = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+let matchData = {}, eventData = {}, standings = {};
+let isAdmin = sessionStorage.getItem('centauro-admin') === '1';
+let activePhase = "grupos", currentMatchId = null;
 
 const getTeam = (n) => TEAMS[n] || {c1:"#85439a",c2:"#f79131",code:"?"};
 const isReal = (n) => !!TEAMS[n];
 
-// Resolver equipo en base a partido fuente (para fases eliminatorias encadenadas)
 function resolveTeam(match, side){
   const fromKey = side==='t1' ? match.t1From : match.t2From;
   if(!fromKey) return side==='t1' ? match.t1 : match.t2;
-  const r = results[fromKey];
-  if(!r) return `Ganador ${fromKey}`;
-  if(r.s1>r.s2) return r.t1;
-  if(r.s2>r.s1) return r.t2;
-  return `Ganador ${fromKey}`;
+  const prevData = matchData[fromKey];
+  if(!prevData || prevData.winner==null) return `Gan. ${fromKey}`;
+  return prevData.winner;
 }
 
-// Texto de origen — a quién venció y por cuánto
 function originText(match, side){
   const fromKey = side==='t1' ? match.t1From : match.t2From;
   if(!fromKey) return null;
-  const r = results[fromKey];
-  if(!r) return `Por definir en ${fromKey}`;
-  const winner = r.s1>r.s2 ? r.t1 : (r.s2>r.s1 ? r.t2 : null);
-  if(!winner) return `Empate en ${fromKey}`;
-  const loser = winner===r.t1 ? r.t2 : r.t1;
-  const ws = winner===r.t1 ? r.s1 : r.s2;
-  const ls = winner===r.t1 ? r.s2 : r.s1;
-  return `Vino de vencer a ${loser} ${ws}-${ls}`;
+  const d = matchData[fromKey];
+  const prev = MATCHES.find(m=>m.id===fromKey);
+  if(!d || !d.winner) return `Por definir en ${fromKey}`;
+  const t1Name = resolveTeam(prev,'t1'), t2Name = resolveTeam(prev,'t2');
+  const loser = d.winner===t1Name ? t2Name : t1Name;
+  const ws = d.winner===t1Name ? d.s1 : d.s2;
+  const ls = d.winner===t1Name ? d.s2 : d.s1;
+  let txt = `Venció a ${loser} ${ws}-${ls}`;
+  if(d.pens1!=null && d.pens2!=null) txt += ` (pen ${d.pens1}-${d.pens2})`;
+  return txt;
 }
 
-// ============================================================
-//  CALENDARIO MENSUAL (Lun→Dom)
-//  Junio 2026: 1 = Lunes (offset 0). Julio 2026: 1 = Miércoles (offset 2).
-// ============================================================
+async function sha256(str){
+  const buf = new TextEncoder().encode(str);
+  const hash = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+onSnapshot(collection(db,'matches'), snap => {
+  snap.docChanges().forEach(c => {
+    if(c.type==='removed') delete matchData[c.doc.id];
+    else matchData[c.doc.id] = c.doc.data();
+  });
+  document.getElementById('conn-state').innerHTML = '<span class="text-green-600">● Datos en vivo</span>';
+  renderAll();
+}, err => { document.getElementById('conn-state').innerHTML = '<span class="text-red-600">● Sin conexión BD</span>'; console.error(err); });
+
+onSnapshot(collection(db,'events'), snap => {
+  eventData = {};
+  snap.forEach(d => { const e = d.data(); (eventData[e.matchId] = eventData[e.matchId] || []).push({id:d.id, ...e}); });
+  Object.values(eventData).forEach(arr=>arr.sort((a,b)=>(a.minute||0)-(b.minute||0)));
+  if(currentMatchId) renderMatchModal();
+  renderCards();
+});
+
+onSnapshot(collection(db,'standings'), snap => {
+  standings = {};
+  snap.forEach(d => standings[d.id] = d.data().teams || []);
+  renderStandings();
+});
+
 function renderMonth(containerId, year, month, daysInMonth, firstDayOffset){
   const cont = document.getElementById(containerId);
   let html = '';
-  // celdas vacías iniciales
   for(let i=0;i<firstDayOffset;i++) html += `<div class="day-cell out"></div>`;
   for(let d=1; d<=daysInMonth; d++){
     const iso = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const matches = MATCHES.filter(m=>m.date===iso).sort((a,b)=>a.time.localeCompare(b.time));
     const hasMatch = matches.length>0;
-    const cls = hasMatch ? 'has-match' : 'empty';
-    html += `<div class="day-cell ${cls}">
-      <div class="day-num">
-        <span>${d}</span>
-        ${hasMatch?`<span class="badge">${matches.length}</span>`:''}
-      </div>
-      ${matches.map(m=>miniMatch(m)).join('')}
-    </div>`;
+    html += `<div class="day-cell ${hasMatch?'has-match':'empty'}"><div class="day-num"><span>${d}</span>${hasMatch?`<span class="badge">${matches.length}</span>`:''}</div>${matches.map(miniMatch).join('')}</div>`;
   }
   cont.innerHTML = html;
-  cont.querySelectorAll('[data-go]').forEach(el=>el.onclick=()=>goToCard(el.dataset.go));
+  cont.querySelectorAll('[data-go]').forEach(el=>el.onclick=()=>openMatchModal(el.dataset.go));
 }
 
 function miniMatch(m){
-  const r = results[m.id];
+  const d = matchData[m.id];
   const t1Name = resolveTeam(m,'t1'), t2Name = resolveTeam(m,'t2');
   const t1 = getTeam(t1Name), t2 = getTeam(t2Name);
-  const lbl1 = isReal(t1Name) ? t1.code : '?';
-  const lbl2 = isReal(t2Name) ? t2.code : '?';
-  return `<div class="mini-match ${r?'played':''}" data-go="${m.id}" title="${t1Name} vs ${t2Name}">
-    <div class="mini-flags">
-      <span class="mini-flag" style="background:linear-gradient(135deg,${t1.c1} 50%, ${t1.c2} 50%);">${lbl1}</span>
-      <span class="mini-flag" style="background:linear-gradient(135deg,${t2.c1} 50%, ${t2.c2} 50%);">${lbl2}</span>
-    </div>
-    <span class="mini-time">${m.time}</span>
-    ${r?`<span class="mini-score">${r.s1}-${r.s2}</span>`:''}
-  </div>`;
+  const cls = d?.status==='live' ? 'live' : (d?.status==='finished' || d?.s1!=null ? 'played' : '');
+  const score = d?.s1!=null ? `<span class="mini-score">${d.s1}-${d.s2}</span>` : '';
+  return `<div class="mini-match ${cls}" data-go="${m.id}" title="${t1Name} vs ${t2Name}"><div class="mini-flags"><span class="mini-flag" style="background:linear-gradient(135deg,${t1.c1} 50%,${t1.c2} 50%);">${isReal(t1Name)?t1.code:'?'}</span><span class="mini-flag" style="background:linear-gradient(135deg,${t2.c1} 50%,${t2.c2} 50%);">${isReal(t2Name)?t2.code:'?'}</span></div><span class="mini-time">${m.time}</span>${score}</div>`;
 }
 
-// ============================================================
-//  NAV DE FASES Y TARJETAS
-// ============================================================
 function renderNav(){
-  document.getElementById('phase-nav').innerHTML = PHASES.map(p=>`
-    <button data-phase="${p.id}" class="pill flex-shrink-0 px-4 py-2 text-sm font-bold rounded-full border-2 border-[var(--c-line)] text-[var(--c-ink-soft)] hover:border-[var(--c-primary)] ${activePhase===p.id?'active':''}">${p.label}</button>
-  `).join('');
-  document.querySelectorAll('#phase-nav button').forEach(b=>b.onclick=()=>{
-    activePhase=b.dataset.phase; renderNav(); renderCards();
-  });
+  document.getElementById('phase-nav').innerHTML = PHASES.map(p=>`<button data-phase="${p.id}" class="pill flex-shrink-0 px-4 py-2 text-sm font-bold rounded-full border-2 border-[var(--c-line)] text-[var(--c-ink-soft)] hover:border-[var(--c-primary)] ${activePhase===p.id?'active':''}">${p.label}</button>`).join('');
+  document.querySelectorAll('#phase-nav button').forEach(b=>b.onclick=()=>{ activePhase=b.dataset.phase; renderNav(); renderCards(); renderStandings(); });
 }
 
 function renderCards(highlightId){
   const list = MATCHES.filter(m=>m.phase===activePhase);
   const cont = document.getElementById('cards-container');
-  if(list.length===0){ cont.innerHTML=`<div class="col-span-full text-center text-[var(--c-ink-soft)] py-10">Sin partidos cargados.</div>`; return; }
-  cont.innerHTML = list.map(m=>cardHTML(m, highlightId===m.id)).join('');
-
-  // Listeners de inputs
-  list.forEach(m=>{
-    const c = document.getElementById(`card-${m.id}`);
-    if(!c) return;
-    const inputs = c.querySelectorAll('input.score-in');
-    const save = ()=>{
-      const s1 = parseInt(inputs[0].value), s2 = parseInt(inputs[1].value);
-      if(isNaN(s1)||isNaN(s2)){ delete results[m.id]; }
-      else {
-        results[m.id] = { s1, s2, t1: resolveTeam(m,'t1'), t2: resolveTeam(m,'t2'), phase:m.phase, g:m.g };
-      }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(results));
-      renderMonth('cal-jun',2026,6,30,0);
-      renderMonth('cal-jul',2026,7,31,2);
-      renderCards();
-    };
-    inputs.forEach(i=>i.addEventListener('change', save));
-  });
-}
-
-function cardHTML(m, highlight){
-  const t1Name = resolveTeam(m,'t1'), t2Name = resolveTeam(m,'t2');
-  const t1 = getTeam(t1Name), t2 = getTeam(t2Name);
-  const r = results[m.id] || {};
-  const o1 = originText(m,'t1'), o2 = originText(m,'t2');
-  const winner = r.s1>r.s2 ? t1Name : (r.s2>r.s1 ? t2Name : null);
-  const dateFmt = new Date(m.date+'T00:00:00').toLocaleDateString('es-VE',{weekday:'long',day:'numeric',month:'long'});
-  return `
-    <div id="card-${m.id}" class="match-card ${highlight?'target':''} ${r.s1!=null?'played':''}">
+  cont.innerHTML = list.map(m=>{
+    const t1Name = resolveTeam(m,'t1'), t2Name = resolveTeam(m,'t2');
+    const t1 = getTeam(t1Name), t2 = getTeam(t2Name);
+    const d = matchData[m.id] || {};
+    const o1 = originText(m,'t1'), o2 = originText(m,'t2');
+    const events = eventData[m.id] || [];
+    const yc = events.filter(e=>e.type==='yellow').length;
+    const rc = events.filter(e=>e.type==='red').length;
+    const dateFmt = new Date(m.date+'T00:00:00').toLocaleDateString('es-VE',{weekday:'long',day:'numeric',month:'long'});
+    const liveTag = d.status==='live' ? '<span class="tag-live">EN VIVO</span>' : '';
+    const winnerLine = d.winner ? `<div class="text-center text-xs font-black text-[var(--c-secondary-dark)] bg-orange-50 py-2 rounded-xl mt-3">🏆 ${d.winner} avanza</div>` : '';
+    return `<div id="card-${m.id}" class="match-card ${highlightId===m.id?'target':''} ${d.s1!=null?'played':''}" data-card="${m.id}">
       <div class="flex justify-between items-center mb-3">
-        <div>
-          <div class="text-[10px] uppercase tracking-widest font-bold text-[var(--c-primary)]">${m.g}</div>
-          <div class="text-xs text-[var(--c-ink-soft)] capitalize">${dateFmt} · ${m.time} <strong>Caracas</strong></div>
-        </div>
+        <div class="min-w-0 flex-1"><div class="text-[10px] uppercase tracking-widest font-bold text-[var(--c-primary)] flex items-center gap-2">${m.g} ${liveTag}</div><div class="text-xs text-[var(--c-ink-soft)] capitalize">${dateFmt} · ${m.time} <strong>Caracas</strong></div></div>
         <div class="text-[10px] text-right text-[var(--c-ink-soft)] max-w-[40%]">📍 ${m.v}</div>
       </div>
-
-      <div class="flex justify-between items-end gap-3 mb-3">
-        <div class="flex-1 text-center">
-          <div class="crest-md mx-auto mb-1" style="background:linear-gradient(135deg,${t1.c1} 50%, ${t1.c2} 50%);">${isReal(t1Name)?t1.code:'?'}</div>
+      <div class="flex justify-between items-end gap-3">
+        <div class="flex-1 text-center min-w-0">
+          <div class="crest-md mx-auto mb-1" style="background:linear-gradient(135deg,${t1.c1} 50%,${t1.c2} 50%);">${isReal(t1Name)?t1.code:'?'}</div>
           <div class="font-black text-sm text-[var(--c-ink)] truncate">${t1Name}</div>
           ${o1?`<div class="origin-tag">↳ ${o1}</div>`:''}
-          <input type="number" min="0" max="20" class="score-in mt-2" value="${r.s1??''}" placeholder="-">
         </div>
-        <div class="text-2xl font-black text-[var(--c-primary-light)] pb-3">VS</div>
-        <div class="flex-1 text-center">
-          <div class="crest-md mx-auto mb-1" style="background:linear-gradient(135deg,${t2.c1} 50%, ${t2.c2} 50%);">${isReal(t2Name)?t2.code:'?'}</div>
+        <div class="text-center px-2 pb-2">${d.s1!=null ? `<div class="text-3xl font-black text-[var(--c-primary-dark)]">${d.s1} - ${d.s2}</div>${d.pens1!=null?`<div class="text-[10px] font-bold text-[var(--c-ink-soft)]">pen ${d.pens1}-${d.pens2}</div>`:''}` : `<div class="text-2xl font-black text-[var(--c-primary-light)]">VS</div>`}</div>
+        <div class="flex-1 text-center min-w-0">
+          <div class="crest-md mx-auto mb-1" style="background:linear-gradient(135deg,${t2.c1} 50%,${t2.c2} 50%);">${isReal(t2Name)?t2.code:'?'}</div>
           <div class="font-black text-sm text-[var(--c-ink)] truncate">${t2Name}</div>
           ${o2?`<div class="origin-tag">↳ ${o2}</div>`:''}
-          <input type="number" min="0" max="20" class="score-in mt-2" value="${r.s2??''}" placeholder="-">
         </div>
       </div>
-
-      ${winner?`<div class="text-center text-xs font-black text-[var(--c-secondary-dark)] bg-orange-50 py-2 rounded-xl">🏆 ${winner} avanza a la siguiente fase</div>`:''}
-      ${r.s1!=null && !winner?`<div class="text-center text-xs font-bold text-[var(--c-ink-soft)] py-2">⚖️ Empate registrado</div>`:''}
+      ${(yc||rc)?`<div class="flex gap-3 justify-center mt-3 text-xs"><span class="font-bold">🟨 ${yc}</span><span class="font-bold">🟥 ${rc}</span></div>`:''}
+      ${winnerLine}
     </div>`;
+  }).join('') || `<div class="col-span-full text-center text-[var(--c-ink-soft)] py-10">Sin partidos en esta fase.</div>`;
+  cont.querySelectorAll('[data-card]').forEach(el=>el.onclick=()=>openMatchModal(el.dataset.card));
 }
 
-// ============================================================
-//  CLICK desde calendario → ir a tarjeta
-// ============================================================
-function goToCard(id){
-  const m = MATCHES.find(x=>x.id===id);
-  if(!m) return;
-  activePhase = m.phase;
-  renderNav();
-  renderCards(id);
-  setTimeout(()=>{
-    const el = document.getElementById(`card-${id}`);
-    if(el){ el.scrollIntoView({behavior:'smooth', block:'center'}); }
-  }, 80);
+function openMatchModal(id){ currentMatchId = id; renderMatchModal(); document.getElementById('match-modal').classList.remove('hidden'); document.getElementById('match-modal').classList.add('flex'); }
+function closeMatchModal(){ currentMatchId = null; document.getElementById('match-modal').classList.add('hidden'); document.getElementById('match-modal').classList.remove('flex'); }
+document.getElementById('mm-close').onclick = closeMatchModal;
+document.getElementById('match-modal').onclick = (e)=>{ if(e.target.id==='match-modal') closeMatchModal(); };
+
+function renderMatchModal(){
+  if(!currentMatchId) return;
+  const m = MATCHES.find(x=>x.id===currentMatchId);
+  const t1Name = resolveTeam(m,'t1'), t2Name = resolveTeam(m,'t2');
+  const t1 = getTeam(t1Name), t2 = getTeam(t2Name);
+  const d = matchData[m.id] || {};
+  const events = eventData[m.id] || [];
+  const dateFmt = new Date(m.date+'T00:00:00').toLocaleDateString('es-VE',{weekday:'long',day:'numeric',month:'long'});
+
+  document.getElementById('mm-phase').textContent = PHASES.find(p=>p.id===m.phase).label;
+  document.getElementById('mm-title').textContent = m.g;
+  document.getElementById('mm-meta').innerHTML = `<span class="capitalize">${dateFmt}</span> · ${m.time} Caracas · 📍 ${m.v}`;
+
+  const scoreBlock = d.s1!=null
+    ? `<div class="text-5xl font-black text-[var(--c-primary-dark)] text-center">${d.s1} <span class="text-[var(--c-primary-light)] mx-2">-</span> ${d.s2}</div>${d.et1!=null?`<div class="text-xs text-center font-bold text-[var(--c-ink-soft)]">T. Extra · ${d.et1} - ${d.et2}</div>`:''}${d.pens1!=null?`<div class="text-xs text-center font-bold text-[var(--c-secondary-dark)]">Penales · ${d.pens1} - ${d.pens2}</div>`:''}`
+    : `<div class="text-3xl font-black text-[var(--c-primary-light)] text-center">VS</div>`;
+
+  const timelineHTML = events.length ? `<div class="mt-4"><div class="text-xs uppercase tracking-widest font-bold text-[var(--c-primary)] mb-2">Línea de tiempo</div>${events.map(e=>renderEvent(e, t1Name, t2Name)).join('')}</div>` : (d.s1!=null ? '' : '<div class="text-center text-sm text-[var(--c-ink-soft)] py-4">Partido aún no jugado.</div>');
+
+  const statsHTML = (d.poss1!=null || d.shots1!=null || d.corners1!=null || d.fouls1!=null) ? `<div class="mt-4 bg-gray-50 rounded-2xl p-4"><div class="text-xs uppercase tracking-widest font-bold text-[var(--c-primary)] mb-3">Estadísticas</div>${statRow('Posesión', d.poss1, d.poss2, '%')}${statRow('Tiros al arco', d.shots1, d.shots2)}${statRow('Tiros de esquina', d.corners1, d.corners2)}${statRow('Faltas', d.fouls1, d.fouls2)}</div>` : '';
+
+  const adminPanel = isAdmin ? renderAdminPanel(m, t1Name, t2Name) : '';
+
+  document.getElementById('mm-body').innerHTML = `<div class="flex justify-between items-center gap-3 mb-3"><div class="text-center flex-1"><div class="crest-lg mx-auto mb-2" style="background:linear-gradient(135deg,${t1.c1} 50%,${t1.c2} 50%);">${isReal(t1Name)?t1.code:'?'}</div><div class="font-black">${t1Name}</div></div><div class="flex-1">${scoreBlock}</div><div class="text-center flex-1"><div class="crest-lg mx-auto mb-2" style="background:linear-gradient(135deg,${t2.c1} 50%,${t2.c2} 50%);">${isReal(t2Name)?t2.code:'?'}</div><div class="font-black">${t2Name}</div></div></div>${d.winner?`<div class="text-center font-black text-[var(--c-secondary-dark)] bg-orange-50 py-2 rounded-xl mt-2">🏆 ${d.winner} clasifica</div>`:''}${timelineHTML}${statsHTML}${adminPanel}`;
+  if(isAdmin) wireAdminPanel(m, t1Name, t2Name);
 }
 
-document.getElementById('btn-reset').onclick = ()=>{
-  if(confirm("¿Reiniciar TODOS los resultados guardados?")){
-    Object.keys(results).forEach(k=>delete results[k]);
-    localStorage.removeItem(STORAGE_KEY);
-    renderMonth('cal-jun',2026,6,30,0);
-    renderMonth('cal-jul',2026,7,31,2);
-    renderCards();
+function statRow(label, v1, v2, suffix=''){
+  if(v1==null && v2==null) return '';
+  const total = (Number(v1)||0)+(Number(v2)||0);
+  const p1 = total ? Math.round((Number(v1)||0)/total*100) : 50;
+  return `<div class="mb-2"><div class="flex justify-between text-xs font-bold mb-1"><span>${v1??'-'}${suffix}</span><span class="text-[var(--c-ink-soft)]">${label}</span><span>${v2??'-'}${suffix}</span></div><div class="flex h-1.5 rounded-full overflow-hidden bg-gray-200"><div style="width:${p1}%;background:var(--c-primary)"></div><div style="width:${100-p1}%;background:var(--c-secondary)"></div></div></div>`;
+}
+
+function renderEvent(e, t1Name, t2Name){
+  const player = e.player || '';
+  const teamName = e.team==='t1'?t1Name:t2Name;
+  let icon='⚽', cls='evt-goal', text='Gol', extra='';
+  if(e.type==='goal'){icon='⚽'; cls='evt-goal'; text='Gol'; if(e.goalType==='penalty')extra=' (penal)'; else if(e.goalType==='own')extra=' (autogol)'; else if(e.goalType==='freekick')extra=' (tiro libre)'; else if(e.goalType==='header')extra=' (cabeza)';}
+  else if(e.type==='yellow'){icon='🟨'; cls='evt-yellow'; text='Amarilla';}
+  else if(e.type==='red'){icon='🟥'; cls='evt-red'; text='Roja';}
+  else if(e.type==='sub'){icon='🔁'; cls='evt-sub'; text='Cambio'; if(e.playerOut) extra=` (sale ${e.playerOut})`;}
+  const delBtn = isAdmin ? `<button data-del-evt="${e.id}" class="text-xs text-red-600 font-bold hover:underline ml-auto">✕</button>` : '';
+  return `<div class="timeline-row"><div class="evt-icon ${cls}">${icon}</div><div class="text-xs font-bold w-10 text-[var(--c-primary-dark)]">${e.minute||'?'}'</div><div class="text-sm flex-1"><strong>${player||text}</strong> <span class="text-[var(--c-ink-soft)]">· ${teamName}</span> <span class="text-xs text-[var(--c-ink-soft)]">${e.type==='goal'?text+extra:extra||''}</span></div>${delBtn}</div>`;
+}
+
+function renderAdminPanel(m, t1Name, t2Name){
+  const d = matchData[m.id] || {};
+  const isKnock = ['octavos','cuartos','semis','final','32avos'].includes(m.phase);
+  return `<div class="mt-6 border-t-2 border-dashed border-[var(--c-secondary)] pt-5">
+    <div class="text-xs uppercase tracking-widest font-black text-[var(--c-secondary-dark)] mb-3">🛠️ Panel admin</div>
+    <div class="mb-4"><div class="text-xs font-bold text-[var(--c-ink-soft)] mb-2">Marcador</div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="text-[10px] font-bold uppercase">${t1Name}</label><input type="number" id="adm-s1" class="fld" value="${d.s1??''}" min="0"></div>
+        <div><label class="text-[10px] font-bold uppercase">${t2Name}</label><input type="number" id="adm-s2" class="fld" value="${d.s2??''}" min="0"></div>
+      </div>
+      ${isKnock?`<div class="grid grid-cols-2 gap-3 mt-2"><div><label class="text-[10px] font-bold uppercase">T. Extra ${t1Name}</label><input type="number" id="adm-et1" class="fld" value="${d.et1??''}" min="0"></div><div><label class="text-[10px] font-bold uppercase">T. Extra ${t2Name}</label><input type="number" id="adm-et2" class="fld" value="${d.et2??''}" min="0"></div></div><div class="grid grid-cols-2 gap-3 mt-2"><div><label class="text-[10px] font-bold uppercase">Penales ${t1Name}</label><input type="number" id="adm-pens1" class="fld" value="${d.pens1??''}" min="0"></div><div><label class="text-[10px] font-bold uppercase">Penales ${t2Name}</label><input type="number" id="adm-pens2" class="fld" value="${d.pens2??''}" min="0"></div></div>`:''}
+      <div class="mt-2"><label class="text-[10px] font-bold uppercase">Estado</label><select id="adm-status" class="fld"><option value="scheduled" ${d.status==='scheduled'||!d.status?'selected':''}>Programado</option><option value="live" ${d.status==='live'?'selected':''}>En vivo</option><option value="finished" ${d.status==='finished'?'selected':''}>Finalizado</option></select></div>
+      <div class="flex gap-2 mt-3"><button id="adm-save-score" class="btn-prim flex-1">Guardar marcador</button><button id="adm-import-api" class="btn-orange" title="Importar de football-data.org">📡 API</button></div>
+    </div>
+    <div class="mb-4"><div class="text-xs font-bold text-[var(--c-ink-soft)] mb-2">Agregar evento (gol, tarjeta, cambio)</div>
+      <div class="grid grid-cols-2 gap-2 mb-2"><select id="evt-type" class="fld"><option value="goal">⚽ Gol</option><option value="yellow">🟨 Amarilla</option><option value="red">🟥 Roja</option><option value="sub">🔁 Cambio</option></select><select id="evt-team" class="fld"><option value="t1">${t1Name}</option><option value="t2">${t2Name}</option></select></div>
+      <div class="grid grid-cols-3 gap-2 mb-2"><input id="evt-min" type="number" min="0" max="130" placeholder="Minuto" class="fld"><input id="evt-player" placeholder="Jugador" class="fld col-span-2"></div>
+      <div class="grid grid-cols-2 gap-2 mb-2"><select id="evt-goal-type" class="fld"><option value="play">De jugada</option><option value="penalty">Penal</option><option value="freekick">Tiro libre</option><option value="header">Cabezazo</option><option value="own">Autogol</option></select><input id="evt-out" placeholder="Sale (si es cambio)" class="fld"></div>
+      <button id="adm-add-evt" class="btn-prim w-full">Agregar evento</button>
+    </div>
+    <div class="mb-3"><div class="text-xs font-bold text-[var(--c-ink-soft)] mb-2">Estadísticas (opcional)</div>
+      <div class="grid grid-cols-2 gap-2">
+        <input id="adm-poss1" type="number" placeholder="Posesión local %" class="fld" value="${d.poss1??''}">
+        <input id="adm-poss2" type="number" placeholder="Posesión visita %" class="fld" value="${d.poss2??''}">
+        <input id="adm-shots1" type="number" placeholder="Tiros local" class="fld" value="${d.shots1??''}">
+        <input id="adm-shots2" type="number" placeholder="Tiros visita" class="fld" value="${d.shots2??''}">
+        <input id="adm-corners1" type="number" placeholder="Córners local" class="fld" value="${d.corners1??''}">
+        <input id="adm-corners2" type="number" placeholder="Córners visita" class="fld" value="${d.corners2??''}">
+        <input id="adm-fouls1" type="number" placeholder="Faltas local" class="fld" value="${d.fouls1??''}">
+        <input id="adm-fouls2" type="number" placeholder="Faltas visita" class="fld" value="${d.fouls2??''}">
+      </div>
+      <button id="adm-save-stats" class="btn-sec w-full mt-2">Guardar estadísticas</button>
+    </div>
+    <button id="adm-clear" class="text-xs text-red-600 font-bold hover:underline">🗑️ Borrar todos los datos de este partido</button>
+  </div>`;
+}
+
+function wireAdminPanel(m, t1Name, t2Name){
+  const $ = id => document.getElementById(id);
+  $('adm-save-score').onclick = async () => {
+    const s1 = parseInt($('adm-s1').value), s2 = parseInt($('adm-s2').value);
+    if(isNaN(s1)||isNaN(s2)) { alert('Ingresa ambos marcadores'); return; }
+    const data = { s1, s2, status: $('adm-status').value, t1: t1Name, t2: t2Name, phase: m.phase, g: m.g, updatedAt: serverTimestamp() };
+    const et1=parseInt($('adm-et1')?.value), et2=parseInt($('adm-et2')?.value);
+    const pens1=parseInt($('adm-pens1')?.value), pens2=parseInt($('adm-pens2')?.value);
+    if(!isNaN(et1)) data.et1=et1; if(!isNaN(et2)) data.et2=et2;
+    if(!isNaN(pens1)) data.pens1=pens1; if(!isNaN(pens2)) data.pens2=pens2;
+    let winner = null;
+    if(!isNaN(pens1) && !isNaN(pens2)){ winner = pens1>pens2 ? t1Name : pens2>pens1 ? t2Name : null; }
+    else { winner = s1>s2 ? t1Name : s2>s1 ? t2Name : null; }
+    data.winner = winner;
+    await setDoc(doc(db,'matches',m.id), data, {merge:true});
+    await recalcStandingsForGroup(m);
+    alert('✅ Marcador guardado');
+  };
+  $('adm-add-evt').onclick = async () => {
+    const evt = { matchId: m.id, type: $('evt-type').value, team: $('evt-team').value, minute: parseInt($('evt-min').value)||0, player: $('evt-player').value.trim() };
+    if(evt.type==='goal') evt.goalType = $('evt-goal-type').value;
+    if(evt.type==='sub'){ evt.playerOut = $('evt-out').value.trim(); }
+    if(!evt.player && evt.type!=='sub'){ alert('Indica el jugador'); return; }
+    await addDoc(collection(db,'events'), {...evt, createdAt: serverTimestamp()});
+    $('evt-min').value=''; $('evt-player').value=''; $('evt-out').value='';
+  };
+  $('adm-save-stats').onclick = async () => {
+    const data = {};
+    ['poss1','poss2','shots1','shots2','corners1','corners2','fouls1','fouls2'].forEach(k=>{ const v = parseInt($(`adm-${k}`).value); if(!isNaN(v)) data[k] = v; });
+    if(Object.keys(data).length===0){ alert('Sin estadísticas para guardar'); return; }
+    data.updatedAt = serverTimestamp();
+    await setDoc(doc(db,'matches',m.id), data, {merge:true});
+    alert('✅ Estadísticas guardadas');
+  };
+  $('adm-clear').onclick = async () => {
+    if(!confirm('¿Borrar marcador y eventos de este partido?')) return;
+    try { await deleteDoc(doc(db,'matches',m.id)); } catch(e){}
+    const evts = await getDocs(query(collection(db,'events'), where('matchId','==',m.id)));
+    const batch = writeBatch(db); evts.forEach(d=>batch.delete(d.ref)); await batch.commit();
+  };
+  $('adm-import-api').onclick = async () => {
+    $('adm-import-api').disabled = true; $('adm-import-api').textContent = '⏳';
+    try { await importFromFootballAPI(m, t1Name, t2Name); $('adm-import-api').textContent='✅'; alert('✅ Datos importados desde API'); }
+    catch(err){ alert('No se pudo importar: '+err.message); $('adm-import-api').textContent='📡 API'; $('adm-import-api').disabled=false; }
+  };
+  document.querySelectorAll('[data-del-evt]').forEach(el=>el.onclick=async ()=>{ if(!confirm('¿Borrar este evento?')) return; await deleteDoc(doc(db,'events',el.dataset.delEvt)); });
+}
+
+const FD_BASE = 'https://api.football-data.org/v4';
+async function fdFetch(path){
+  try {
+    const r = await fetch(FD_BASE+path, { headers: {'X-Auth-Token': FOOTBALL_API_KEY} });
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return await r.json();
+  } catch(e) {
+    const proxy = 'https://corsproxy.io/?';
+    const url = FD_BASE+path+(path.includes('?')?'&':'?')+'X-Auth-Token='+FOOTBALL_API_KEY;
+    const r = await fetch(proxy+encodeURIComponent(url));
+    if(!r.ok) throw new Error('Proxy HTTP '+r.status);
+    return await r.json();
   }
-};
+}
 
-// ============================================================
-//  INIT
-// ============================================================
-renderMonth('cal-jun',2026,6,30,0);  // junio: día 1 = lunes
-renderMonth('cal-jul',2026,7,31,2);  // julio: día 1 = miércoles
+async function importFromFootballAPI(m, t1Name, t2Name){
+  const data = await fdFetch('/competitions/WC/matches?dateFrom='+m.date+'&dateTo='+m.date);
+  if(!data.matches || data.matches.length===0) throw new Error('Sin partidos en esa fecha en API');
+  const norm = s => (s||'').toLowerCase().replace(/[^a-z]/g,'');
+  const t1N = norm(t1Name), t2N = norm(t2Name);
+  const found = data.matches.find(x => {
+    const h = norm(x.homeTeam?.name||''), a = norm(x.awayTeam?.name||'');
+    return (h.includes(t1N.slice(0,4)) && a.includes(t2N.slice(0,4))) || (h.includes(t2N.slice(0,4)) && a.includes(t1N.slice(0,4)));
+  });
+  if(!found) throw new Error('Partido no encontrado en el fixture API');
+  const full = found.score?.fullTime;
+  const swap = norm(found.homeTeam.name).includes(t2N.slice(0,4));
+  const update = { updatedAt: serverTimestamp(), t1:t1Name, t2:t2Name, phase:m.phase, g:m.g };
+  if(full && full.home!=null){
+    update.s1 = swap ? full.away : full.home;
+    update.s2 = swap ? full.home : full.away;
+    update.status = found.status==='FINISHED' ? 'finished' : (found.status==='IN_PLAY' ? 'live' : 'scheduled');
+    update.winner = update.s1>update.s2 ? t1Name : update.s2>update.s1 ? t2Name : null;
+  }
+  await setDoc(doc(db,'matches',m.id), update, {merge:true});
+  if(found.id){
+    try {
+      const detail = await fdFetch('/matches/'+found.id);
+      if(detail.goals && detail.goals.length){
+        const existing = await getDocs(query(collection(db,'events'), where('matchId','==',m.id)));
+        const batch = writeBatch(db); existing.forEach(d=>batch.delete(d.ref)); await batch.commit();
+        for(const g of detail.goals){
+          const scorerTeam = norm(g.team?.name||'').includes(norm(t1Name).slice(0,4)) ? 't1' : 't2';
+          await addDoc(collection(db,'events'), { matchId: m.id, type:'goal', minute: g.minute||0, player: g.scorer?.name||'(desconocido)', team: scorerTeam, goalType: g.type==='PENALTY'?'penalty':g.type==='OWN'?'own':'play', createdAt: serverTimestamp() });
+        }
+      }
+    } catch(e){ console.warn('No se pudieron traer goles detallados', e); }
+  }
+  await recalcStandingsForGroup(m);
+}
+
+async function recalcStandingsForGroup(m){
+  if(m.phase!=='grupos') return;
+  const groupMatches = MATCHES.filter(x=>x.phase==='grupos' && x.g===m.g);
+  const table = {};
+  groupMatches.forEach(gm => {
+    const d = matchData[gm.id]; if(!d || d.s1==null) return;
+    const add = (team, pts, gf, gc) => { const t = table[team]=table[team]||{team, pts:0, gf:0, gc:0, pj:0}; t.pts+=pts; t.gf+=gf; t.gc+=gc; t.pj++; };
+    if(d.s1>d.s2){ add(gm.t1,3,d.s1,d.s2); add(gm.t2,0,d.s2,d.s1); }
+    else if(d.s2>d.s1){ add(gm.t1,0,d.s1,d.s2); add(gm.t2,3,d.s2,d.s1); }
+    else { add(gm.t1,1,d.s1,d.s2); add(gm.t2,1,d.s2,d.s1); }
+  });
+  const sorted = Object.values(table).sort((a,b)=>b.pts-a.pts || (b.gf-b.gc)-(a.gf-a.gc) || b.gf-a.gf);
+  await setDoc(doc(db,'standings',m.g), {teams: sorted, updatedAt: serverTimestamp()});
+}
+
+function renderStandings(){
+  const sec = document.getElementById('standings-section');
+  if(activePhase!=='grupos'){ sec.classList.add('hidden'); return; }
+  sec.classList.remove('hidden');
+  const cont = document.getElementById('standings-container');
+  const groups = [...new Set(MATCHES.filter(m=>m.phase==='grupos').map(m=>m.g))];
+  cont.innerHTML = groups.map(g => {
+    const teams = standings[g] || [];
+    return `<div class="bg-white border border-[var(--c-line)] rounded-2xl p-4"><div class="font-black text-[var(--c-primary-dark)] mb-3 flex justify-between"><span>${g}</span><span class="ribbon">Posiciones</span></div>${teams.length===0?'<div class="text-xs text-[var(--c-ink-soft)] py-2">Sin partidos jugados</div>':`<table class="w-full text-sm"><thead class="text-[10px] uppercase text-[var(--c-ink-soft)] border-b border-[var(--c-line)]"><tr><th class="text-left py-1">Equipo</th><th>PJ</th><th>GF</th><th>GC</th><th>Pts</th></tr></thead><tbody>${teams.map((t,i)=>{ const tm=getTeam(t.team); const adv=i<2; return `<tr class="${adv?'bg-orange-50':''}"><td class="py-1.5 flex items-center gap-2"><span style="background:linear-gradient(135deg,${tm.c1} 50%,${tm.c2} 50%);width:18px;height:18px;border-radius:50%;display:inline-block;border:1.5px solid white"></span><span class="font-bold ${adv?'text-[var(--c-secondary-dark)]':''}">${t.team}</span>${adv?'<span class="text-[var(--c-secondary)]">↑</span>':''}</td><td class="text-center">${t.pj}</td><td class="text-center">${t.gf}</td><td class="text-center">${t.gc}</td><td class="text-center font-black text-[var(--c-primary)]">${t.pts}</td></tr>`}).join('')}</tbody></table>`}</div>`;
+  }).join('');
+}
+
+const adminBtn = document.getElementById('admin-btn');
+const loginModal = document.getElementById('login-modal');
+function updateAdminBadge(){ adminBtn.textContent = isAdmin ? '🔓 Admin · Salir' : '🔒 Admin'; adminBtn.classList.toggle('on', isAdmin); }
+adminBtn.onclick = ()=>{
+  if(isAdmin){ if(confirm('¿Salir del modo admin?')){ isAdmin=false; sessionStorage.removeItem('centauro-admin'); updateAdminBadge(); if(currentMatchId) renderMatchModal(); } }
+  else { loginModal.classList.remove('hidden'); loginModal.classList.add('flex'); setTimeout(()=>document.getElementById('login-pwd').focus(), 50); }
+};
+document.getElementById('login-cancel').onclick = ()=>{ loginModal.classList.add('hidden'); loginModal.classList.remove('flex'); document.getElementById('login-err').classList.add('hidden'); document.getElementById('login-pwd').value=''; };
+document.getElementById('login-submit').onclick = async ()=>{
+  const pwd = document.getElementById('login-pwd').value;
+  const h = await sha256(pwd);
+  if(h===ADMIN_HASH){
+    isAdmin = true; sessionStorage.setItem('centauro-admin','1');
+    loginModal.classList.add('hidden'); loginModal.classList.remove('flex');
+    document.getElementById('login-pwd').value=''; updateAdminBadge();
+    if(currentMatchId) renderMatchModal();
+  } else { document.getElementById('login-err').classList.remove('hidden'); }
+};
+document.getElementById('login-pwd').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('login-submit').click(); });
+
+function renderAll(){ renderMonth('cal-jun',2026,6,30,0); renderMonth('cal-jul',2026,7,31,2); renderCards(); renderStandings(); if(currentMatchId) renderMatchModal(); }
+
 renderNav();
-renderCards();
+renderAll();
+updateAdminBadge();
+document.getElementById('conn-state').innerHTML = '<span class="text-[var(--c-ink-soft)]">● Conectando...</span>';
 </script>
 </body>
 </html>
