@@ -198,60 +198,124 @@ const TEAMS = {
 };
 
 const MATCHES = [
-  {id:"G01",phase:"grupos",date:"2026-06-11",time:"12:00",t1:"México",t2:"Sudáfrica",g:"Grupo A",v:"Azteca, CDMX"},
-  {id:"G02",phase:"grupos",date:"2026-06-11",time:"16:00",t1:"Corea del Sur",t2:"Rep. Checa",g:"Grupo A",v:"Akron, Guadalajara"},
-  {id:"G03",phase:"grupos",date:"2026-06-12",time:"12:00",t1:"Canadá",t2:"Bosnia",g:"Grupo B",v:"BMO Field, Toronto"},
-  {id:"G04",phase:"grupos",date:"2026-06-12",time:"19:00",t1:"EE. UU.",t2:"Paraguay",g:"Grupo D",v:"SoFi, Los Ángeles"},
-  {id:"G05",phase:"grupos",date:"2026-06-13",time:"12:00",t1:"Catar",t2:"Suiza",g:"Grupo B",v:"Levi's, S. Francisco"},
-  {id:"G06",phase:"grupos",date:"2026-06-13",time:"15:00",t1:"Brasil",t2:"Marruecos",g:"Grupo C",v:"MetLife, NJ"},
-  {id:"G07",phase:"grupos",date:"2026-06-13",time:"19:00",t1:"Haití",t2:"Escocia",g:"Grupo C",v:"Gillette, Boston"},
-  {id:"G08",phase:"grupos",date:"2026-06-14",time:"12:00",t1:"Australia",t2:"Turquía",g:"Grupo D",v:"BC Place, Vancouver"},
-  {id:"G09",phase:"grupos",date:"2026-06-14",time:"15:00",t1:"Alemania",t2:"Curazao",g:"Grupo E",v:"NRG, Houston"},
-  {id:"G10",phase:"grupos",date:"2026-06-14",time:"18:00",t1:"Países Bajos",t2:"Japón",g:"Grupo F",v:"AT&T, Dallas"},
-  {id:"G11",phase:"grupos",date:"2026-06-14",time:"21:00",t1:"Costa de Marfil",t2:"Ecuador",g:"Grupo E",v:"Lincoln Fin., Filadelfia"},
-  {id:"G12",phase:"grupos",date:"2026-06-15",time:"12:00",t1:"Suecia",t2:"Túnez",g:"Grupo F",v:"BBVA, Monterrey"},
-  {id:"G13",phase:"grupos",date:"2026-06-15",time:"15:00",t1:"España",t2:"Cabo Verde",g:"Grupo H",v:"Mercedes-Benz, Atlanta"},
-  {id:"G14",phase:"grupos",date:"2026-06-15",time:"18:00",t1:"Bélgica",t2:"Egipto",g:"Grupo G",v:"Lumen, Seattle"},
-  {id:"G15",phase:"grupos",date:"2026-06-15",time:"21:00",t1:"Arabia Saudita",t2:"Uruguay",g:"Grupo H",v:"Hard Rock, Miami"},
-  {id:"G16",phase:"grupos",date:"2026-06-16",time:"12:00",t1:"Argentina",t2:"Senegal",g:"Grupo I",v:"Mercedes-Benz, Atlanta"},
-  {id:"G17",phase:"grupos",date:"2026-06-16",time:"15:00",t1:"Polonia",t2:"Jamaica",g:"Grupo I",v:"BBVA, Monterrey"},
-  {id:"G18",phase:"grupos",date:"2026-06-16",time:"19:00",t1:"Inglaterra",t2:"Nigeria",g:"Grupo J",v:"Arrowhead, Kansas City"},
-  {id:"G19",phase:"grupos",date:"2026-06-17",time:"12:00",t1:"Francia",t2:"Argelia",g:"Grupo K",v:"MetLife, NJ"},
-  {id:"G20",phase:"grupos",date:"2026-06-17",time:"15:00",t1:"Portugal",t2:"Panamá",g:"Grupo L",v:"Hard Rock, Miami"},
-  {id:"G21",phase:"grupos",date:"2026-06-17",time:"19:00",t1:"Croacia",t2:"Ghana",g:"Grupo J",v:"Lincoln Fin., Filadelfia"},
-  {id:"G22",phase:"grupos",date:"2026-06-18",time:"12:00",t1:"Colombia",t2:"Costa Rica",g:"Grupo K",v:"NRG, Houston"},
-  {id:"G23",phase:"grupos",date:"2026-06-19",time:"15:00",t1:"México",t2:"Corea del Sur",g:"Grupo A",v:"Akron, Guadalajara"},
-  {id:"G24",phase:"grupos",date:"2026-06-20",time:"15:00",t1:"Brasil",t2:"Escocia",g:"Grupo C",v:"MetLife, NJ"},
-  {id:"G25",phase:"grupos",date:"2026-06-21",time:"15:00",t1:"Japón",t2:"Suecia",g:"Grupo F",v:"BBVA, Monterrey"},
-  {id:"G26",phase:"grupos",date:"2026-06-22",time:"18:00",t1:"Argentina",t2:"Polonia",g:"Grupo I",v:"SoFi, Los Ángeles"},
-  {id:"G27",phase:"grupos",date:"2026-06-23",time:"12:00",t1:"Inglaterra",t2:"Croacia",g:"Grupo J",v:"Arrowhead, Kansas City"},
-  {id:"G28",phase:"grupos",date:"2026-06-23",time:"18:00",t1:"Francia",t2:"Colombia",g:"Grupo K",v:"MetLife, NJ"},
-  {id:"G29",phase:"grupos",date:"2026-06-24",time:"19:00",t1:"México",t2:"Rep. Checa",g:"Grupo A",v:"Azteca, CDMX"},
-  {id:"G30",phase:"grupos",date:"2026-06-25",time:"19:00",t1:"Brasil",t2:"Haití",g:"Grupo C",v:"MetLife, NJ"},
-  {id:"G31",phase:"grupos",date:"2026-06-26",time:"15:00",t1:"EE. UU.",t2:"Turquía",g:"Grupo D",v:"SoFi, Los Ángeles"},
-  {id:"G32",phase:"grupos",date:"2026-06-27",time:"16:00",t1:"España",t2:"Arabia Saudita",g:"Grupo H",v:"Mercedes-Benz, Atlanta"},
-  {id:"R1",phase:"32avos",date:"2026-06-30",time:"12:00",t1:"1°A",t2:"3°B/E/F",g:"32avos · M1",v:"BMO Field, Toronto"},
-  {id:"R2",phase:"32avos",date:"2026-06-30",time:"16:00",t1:"1°B",t2:"3°A/C/D",g:"32avos · M2",v:"AT&T, Dallas"},
-  {id:"R3",phase:"32avos",date:"2026-06-30",time:"20:00",t1:"2°A",t2:"2°C",g:"32avos · M3",v:"Azteca, CDMX"},
-  {id:"R4",phase:"32avos",date:"2026-07-01",time:"12:00",t1:"1°C",t2:"3°G/H/I",g:"32avos · M4",v:"Levi's, S. Francisco"},
-  {id:"R5",phase:"32avos",date:"2026-07-01",time:"16:00",t1:"1°D",t2:"3°A/B/E",g:"32avos · M5",v:"NRG, Houston"},
-  {id:"R6",phase:"32avos",date:"2026-07-01",time:"20:00",t1:"2°B",t2:"2°F",g:"32avos · M6",v:"BC Place, Vancouver"},
-  {id:"R7",phase:"32avos",date:"2026-07-02",time:"12:00",t1:"1°E",t2:"3°C/D/F",g:"32avos · M7",v:"Lincoln Fin., Filadelfia"},
-  {id:"R8",phase:"32avos",date:"2026-07-02",time:"16:00",t1:"1°F",t2:"3°G/J/K",g:"32avos · M8",v:"Lumen, Seattle"},
-  {id:"O1",phase:"octavos",date:"2026-07-06",time:"12:00",t1From:"R1",t2From:"R2",g:"Octavos · OF1",v:"AT&T, Dallas"},
-  {id:"O2",phase:"octavos",date:"2026-07-06",time:"16:00",t1From:"R3",t2From:"R4",g:"Octavos · OF2",v:"SoFi, Los Ángeles"},
-  {id:"O3",phase:"octavos",date:"2026-07-07",time:"12:00",t1From:"R5",t2From:"R6",g:"Octavos · OF3",v:"Levi's, S. Francisco"},
-  {id:"O4",phase:"octavos",date:"2026-07-07",time:"16:00",t1From:"R7",t2From:"R8",g:"Octavos · OF4",v:"Lumen, Seattle"},
-  {id:"Q1",phase:"cuartos",date:"2026-07-10",time:"12:00",t1From:"O1",t2From:"O2",g:"Cuartos · QF1",v:"MetLife, NJ"},
-  {id:"Q2",phase:"cuartos",date:"2026-07-10",time:"16:00",t1From:"O3",t2From:"O4",g:"Cuartos · QF2",v:"Azteca, CDMX"},
-  {id:"S1",phase:"semis",date:"2026-07-14",time:"15:00",t1From:"Q1",t2From:"Q2",g:"Semifinal · SF1",v:"AT&T, Dallas"},
-  {id:"F1",phase:"final",date:"2026-07-19",time:"15:00",t1From:"S1",t2From:"S1",g:"Gran Final",v:"MetLife, New Jersey"}
+  // ===== FASE DE GRUPOS J1 (11-17 jun, 24 partidos) =====
+  {id:"G01",phase:"grupos",date:"2026-06-11",time:"16:00",t1:"México",t2:"Sudáfrica",g:"Grupo A",v:"Azteca, CDMX"},
+  {id:"G02",phase:"grupos",date:"2026-06-11",time:"21:00",t1:"Corea del Sur",t2:"Rep. Checa",g:"Grupo A",v:"Akron, Guadalajara"},
+  {id:"G03",phase:"grupos",date:"2026-06-12",time:"16:00",t1:"Canadá",t2:"Bosnia",g:"Grupo B",v:"BMO Field, Toronto"},
+  {id:"G04",phase:"grupos",date:"2026-06-12",time:"21:00",t1:"EE. UU.",t2:"Paraguay",g:"Grupo D",v:"SoFi, Los Ángeles"},
+  {id:"G05",phase:"grupos",date:"2026-06-13",time:"13:00",t1:"Australia",t2:"Turquía",g:"Grupo D",v:"BC Place, Vancouver"},
+  {id:"G06",phase:"grupos",date:"2026-06-13",time:"16:00",t1:"Brasil",t2:"Marruecos",g:"Grupo C",v:"MetLife, NJ"},
+  {id:"G07",phase:"grupos",date:"2026-06-13",time:"18:00",t1:"Haití",t2:"Escocia",g:"Grupo C",v:"Gillette, Boston"},
+  {id:"G08",phase:"grupos",date:"2026-06-13",time:"21:00",t1:"Catar",t2:"Suiza",g:"Grupo B",v:"Levi's, S. Francisco"},
+  {id:"G09",phase:"grupos",date:"2026-06-14",time:"13:00",t1:"Alemania",t2:"Curazao",g:"Grupo E",v:"NRG, Houston"},
+  {id:"G10",phase:"grupos",date:"2026-06-14",time:"16:00",t1:"Países Bajos",t2:"Japón",g:"Grupo F",v:"AT&T, Dallas"},
+  {id:"G11",phase:"grupos",date:"2026-06-14",time:"18:00",t1:"Costa de Marfil",t2:"Ecuador",g:"Grupo E",v:"Lincoln, Filadelfia"},
+  {id:"G12",phase:"grupos",date:"2026-06-14",time:"21:00",t1:"Suecia",t2:"Túnez",g:"Grupo F",v:"BBVA, Monterrey"},
+  {id:"G13",phase:"grupos",date:"2026-06-15",time:"13:00",t1:"España",t2:"Cabo Verde",g:"Grupo H",v:"Mercedes-Benz, Atlanta"},
+  {id:"G14",phase:"grupos",date:"2026-06-15",time:"16:00",t1:"Bélgica",t2:"Egipto",g:"Grupo G",v:"Lumen, Seattle"},
+  {id:"G15",phase:"grupos",date:"2026-06-15",time:"18:00",t1:"Arabia Saudita",t2:"Uruguay",g:"Grupo H",v:"Hard Rock, Miami"},
+  {id:"G16",phase:"grupos",date:"2026-06-15",time:"21:00",t1:"Irán",t2:"Nva. Zelanda",g:"Grupo G",v:"Arrowhead, Kansas City"},
+  {id:"G17",phase:"grupos",date:"2026-06-16",time:"13:00",t1:"Argentina",t2:"Senegal",g:"Grupo I",v:"Mercedes-Benz, Atlanta"},
+  {id:"G18",phase:"grupos",date:"2026-06-16",time:"16:00",t1:"Polonia",t2:"Jamaica",g:"Grupo I",v:"BBVA, Monterrey"},
+  {id:"G19",phase:"grupos",date:"2026-06-16",time:"18:00",t1:"Inglaterra",t2:"Nigeria",g:"Grupo J",v:"Arrowhead, Kansas City"},
+  {id:"G20",phase:"grupos",date:"2026-06-16",time:"21:00",t1:"Croacia",t2:"Ghana",g:"Grupo J",v:"Gillette, Boston"},
+  {id:"G21",phase:"grupos",date:"2026-06-17",time:"13:00",t1:"Francia",t2:"Argelia",g:"Grupo K",v:"MetLife, NJ"},
+  {id:"G22",phase:"grupos",date:"2026-06-17",time:"16:00",t1:"Colombia",t2:"Costa Rica",g:"Grupo K",v:"NRG, Houston"},
+  {id:"G23",phase:"grupos",date:"2026-06-17",time:"18:00",t1:"Portugal",t2:"Panamá",g:"Grupo L",v:"Hard Rock, Miami"},
+  {id:"G24",phase:"grupos",date:"2026-06-17",time:"21:00",t1:"Uzbekistán",t2:"Jordania",g:"Grupo L",v:"Lumen, Seattle"},
+  // ===== J2 (18-23 jun, 24 partidos) =====
+  {id:"G25",phase:"grupos",date:"2026-06-18",time:"13:00",t1:"México",t2:"Corea del Sur",g:"Grupo A",v:"Akron, Guadalajara"},
+  {id:"G26",phase:"grupos",date:"2026-06-18",time:"16:00",t1:"Sudáfrica",t2:"Rep. Checa",g:"Grupo A",v:"Azteca, CDMX"},
+  {id:"G27",phase:"grupos",date:"2026-06-18",time:"18:00",t1:"Canadá",t2:"Catar",g:"Grupo B",v:"BMO Field, Toronto"},
+  {id:"G28",phase:"grupos",date:"2026-06-18",time:"21:00",t1:"Bosnia",t2:"Suiza",g:"Grupo B",v:"BC Place, Vancouver"},
+  {id:"G29",phase:"grupos",date:"2026-06-19",time:"13:00",t1:"Brasil",t2:"Haití",g:"Grupo C",v:"MetLife, NJ"},
+  {id:"G30",phase:"grupos",date:"2026-06-19",time:"16:00",t1:"Marruecos",t2:"Escocia",g:"Grupo C",v:"Gillette, Boston"},
+  {id:"G31",phase:"grupos",date:"2026-06-19",time:"18:00",t1:"EE. UU.",t2:"Australia",g:"Grupo D",v:"SoFi, Los Ángeles"},
+  {id:"G32",phase:"grupos",date:"2026-06-19",time:"21:00",t1:"Paraguay",t2:"Turquía",g:"Grupo D",v:"Levi's, S. Francisco"},
+  {id:"G33",phase:"grupos",date:"2026-06-20",time:"13:00",t1:"Alemania",t2:"Costa de Marfil",g:"Grupo E",v:"NRG, Houston"},
+  {id:"G34",phase:"grupos",date:"2026-06-20",time:"16:00",t1:"Curazao",t2:"Ecuador",g:"Grupo E",v:"Lincoln, Filadelfia"},
+  {id:"G35",phase:"grupos",date:"2026-06-20",time:"18:00",t1:"Países Bajos",t2:"Suecia",g:"Grupo F",v:"AT&T, Dallas"},
+  {id:"G36",phase:"grupos",date:"2026-06-20",time:"21:00",t1:"Japón",t2:"Túnez",g:"Grupo F",v:"BBVA, Monterrey"},
+  {id:"G37",phase:"grupos",date:"2026-06-21",time:"13:00",t1:"España",t2:"Arabia Saudita",g:"Grupo H",v:"Mercedes-Benz, Atlanta"},
+  {id:"G38",phase:"grupos",date:"2026-06-21",time:"16:00",t1:"Cabo Verde",t2:"Uruguay",g:"Grupo H",v:"Hard Rock, Miami"},
+  {id:"G39",phase:"grupos",date:"2026-06-21",time:"18:00",t1:"Bélgica",t2:"Irán",g:"Grupo G",v:"Lumen, Seattle"},
+  {id:"G40",phase:"grupos",date:"2026-06-21",time:"21:00",t1:"Egipto",t2:"Nva. Zelanda",g:"Grupo G",v:"Arrowhead, Kansas City"},
+  {id:"G41",phase:"grupos",date:"2026-06-22",time:"13:00",t1:"Argentina",t2:"Polonia",g:"Grupo I",v:"Mercedes-Benz, Atlanta"},
+  {id:"G42",phase:"grupos",date:"2026-06-22",time:"16:00",t1:"Senegal",t2:"Jamaica",g:"Grupo I",v:"BBVA, Monterrey"},
+  {id:"G43",phase:"grupos",date:"2026-06-22",time:"18:00",t1:"Inglaterra",t2:"Croacia",g:"Grupo J",v:"Arrowhead, Kansas City"},
+  {id:"G44",phase:"grupos",date:"2026-06-22",time:"21:00",t1:"Nigeria",t2:"Ghana",g:"Grupo J",v:"Gillette, Boston"},
+  {id:"G45",phase:"grupos",date:"2026-06-23",time:"13:00",t1:"Francia",t2:"Colombia",g:"Grupo K",v:"MetLife, NJ"},
+  {id:"G46",phase:"grupos",date:"2026-06-23",time:"16:00",t1:"Argelia",t2:"Costa Rica",g:"Grupo K",v:"NRG, Houston"},
+  {id:"G47",phase:"grupos",date:"2026-06-23",time:"18:00",t1:"Portugal",t2:"Uzbekistán",g:"Grupo L",v:"Hard Rock, Miami"},
+  {id:"G48",phase:"grupos",date:"2026-06-23",time:"21:00",t1:"Panamá",t2:"Jordania",g:"Grupo L",v:"Lumen, Seattle"},
+  // ===== J3 (24-27 jun, 24 partidos · cierres por grupo) =====
+  {id:"G49",phase:"grupos",date:"2026-06-24",time:"16:00",t1:"México",t2:"Rep. Checa",g:"Grupo A",v:"Azteca, CDMX"},
+  {id:"G50",phase:"grupos",date:"2026-06-24",time:"16:00",t1:"Canadá",t2:"Suiza",g:"Grupo B",v:"BMO Field, Toronto"},
+  {id:"G51",phase:"grupos",date:"2026-06-24",time:"16:00",t1:"Brasil",t2:"Escocia",g:"Grupo C",v:"MetLife, NJ"},
+  {id:"G52",phase:"grupos",date:"2026-06-24",time:"21:00",t1:"Sudáfrica",t2:"Corea del Sur",g:"Grupo A",v:"Akron, Guadalajara"},
+  {id:"G53",phase:"grupos",date:"2026-06-24",time:"21:00",t1:"Bosnia",t2:"Catar",g:"Grupo B",v:"BC Place, Vancouver"},
+  {id:"G54",phase:"grupos",date:"2026-06-24",time:"21:00",t1:"Marruecos",t2:"Haití",g:"Grupo C",v:"Gillette, Boston"},
+  {id:"G55",phase:"grupos",date:"2026-06-25",time:"16:00",t1:"EE. UU.",t2:"Turquía",g:"Grupo D",v:"SoFi, Los Ángeles"},
+  {id:"G56",phase:"grupos",date:"2026-06-25",time:"16:00",t1:"Alemania",t2:"Ecuador",g:"Grupo E",v:"NRG, Houston"},
+  {id:"G57",phase:"grupos",date:"2026-06-25",time:"16:00",t1:"Países Bajos",t2:"Túnez",g:"Grupo F",v:"AT&T, Dallas"},
+  {id:"G58",phase:"grupos",date:"2026-06-25",time:"21:00",t1:"Paraguay",t2:"Australia",g:"Grupo D",v:"Levi's, S. Francisco"},
+  {id:"G59",phase:"grupos",date:"2026-06-25",time:"21:00",t1:"Curazao",t2:"Costa de Marfil",g:"Grupo E",v:"Lincoln, Filadelfia"},
+  {id:"G60",phase:"grupos",date:"2026-06-25",time:"21:00",t1:"Japón",t2:"Suecia",g:"Grupo F",v:"BBVA, Monterrey"},
+  {id:"G61",phase:"grupos",date:"2026-06-26",time:"16:00",t1:"Bélgica",t2:"Nva. Zelanda",g:"Grupo G",v:"Lumen, Seattle"},
+  {id:"G62",phase:"grupos",date:"2026-06-26",time:"16:00",t1:"España",t2:"Uruguay",g:"Grupo H",v:"Mercedes-Benz, Atlanta"},
+  {id:"G63",phase:"grupos",date:"2026-06-26",time:"16:00",t1:"Argentina",t2:"Jamaica",g:"Grupo I",v:"BBVA, Monterrey"},
+  {id:"G64",phase:"grupos",date:"2026-06-26",time:"21:00",t1:"Egipto",t2:"Irán",g:"Grupo G",v:"Arrowhead, Kansas City"},
+  {id:"G65",phase:"grupos",date:"2026-06-26",time:"21:00",t1:"Cabo Verde",t2:"Arabia Saudita",g:"Grupo H",v:"Hard Rock, Miami"},
+  {id:"G66",phase:"grupos",date:"2026-06-26",time:"21:00",t1:"Senegal",t2:"Polonia",g:"Grupo I",v:"Mercedes-Benz, Atlanta"},
+  {id:"G67",phase:"grupos",date:"2026-06-27",time:"16:00",t1:"Inglaterra",t2:"Ghana",g:"Grupo J",v:"Arrowhead, Kansas City"},
+  {id:"G68",phase:"grupos",date:"2026-06-27",time:"16:00",t1:"Francia",t2:"Costa Rica",g:"Grupo K",v:"MetLife, NJ"},
+  {id:"G69",phase:"grupos",date:"2026-06-27",time:"16:00",t1:"Portugal",t2:"Jordania",g:"Grupo L",v:"Hard Rock, Miami"},
+  {id:"G70",phase:"grupos",date:"2026-06-27",time:"21:00",t1:"Nigeria",t2:"Croacia",g:"Grupo J",v:"Gillette, Boston"},
+  {id:"G71",phase:"grupos",date:"2026-06-27",time:"21:00",t1:"Argelia",t2:"Colombia",g:"Grupo K",v:"NRG, Houston"},
+  {id:"G72",phase:"grupos",date:"2026-06-27",time:"21:00",t1:"Panamá",t2:"Uzbekistán",g:"Grupo L",v:"Lumen, Seattle"},
+  // ===== DIECISEISAVOS (28 jun - 3 jul, 16 partidos) =====
+  {id:"R73",phase:"16avos",date:"2026-06-28",time:"16:00",t1:"1°A",t2:"3°B/E/F",g:"16avos · P73",v:"SoFi, Los Ángeles"},
+  {id:"R74",phase:"16avos",date:"2026-06-28",time:"21:00",t1:"1°B",t2:"3°A/C/D",g:"16avos · P74",v:"Gillette, Boston"},
+  {id:"R75",phase:"16avos",date:"2026-06-29",time:"13:00",t1:"1°C",t2:"3°G/H/I",g:"16avos · P75",v:"BBVA, Monterrey"},
+  {id:"R76",phase:"16avos",date:"2026-06-29",time:"18:00",t1:"1°D",t2:"3°A/B/E",g:"16avos · P76",v:"NRG, Houston"},
+  {id:"R77",phase:"16avos",date:"2026-06-29",time:"21:00",t1:"1°E",t2:"3°C/D/F",g:"16avos · P77",v:"AT&T, Dallas"},
+  {id:"R78",phase:"16avos",date:"2026-06-30",time:"16:00",t1:"1°F",t2:"3°G/J/K",g:"16avos · P78",v:"MetLife, NJ"},
+  {id:"R79",phase:"16avos",date:"2026-06-30",time:"19:00",t1:"1°G",t2:"3°H/I/J",g:"16avos · P79",v:"AT&T, Dallas"},
+  {id:"R80",phase:"16avos",date:"2026-06-30",time:"21:00",t1:"1°H",t2:"3°A/B/F",g:"16avos · P80",v:"Azteca, CDMX"},
+  {id:"R81",phase:"16avos",date:"2026-07-01",time:"16:00",t1:"1°I",t2:"3°C/E/H",g:"16avos · P81",v:"Mercedes-Benz, Atlanta"},
+  {id:"R82",phase:"16avos",date:"2026-07-01",time:"19:00",t1:"1°J",t2:"3°D/I/K",g:"16avos · P82",v:"Levi's, S. Francisco"},
+  {id:"R83",phase:"16avos",date:"2026-07-01",time:"22:00",t1:"1°K",t2:"3°K/L",g:"16avos · P83",v:"Lumen, Seattle"},
+  {id:"R84",phase:"16avos",date:"2026-07-02",time:"16:00",t1:"1°L",t2:"3°G/I/L",g:"16avos · P84",v:"BMO Field, Toronto"},
+  {id:"R85",phase:"16avos",date:"2026-07-02",time:"19:00",t1:"2°A",t2:"2°C",g:"16avos · P85",v:"SoFi, Los Ángeles"},
+  {id:"R86",phase:"16avos",date:"2026-07-02",time:"22:00",t1:"2°B",t2:"2°F",g:"16avos · P86",v:"BC Place, Vancouver"},
+  {id:"R87",phase:"16avos",date:"2026-07-03",time:"16:00",t1:"2°D",t2:"2°E",g:"16avos · P87",v:"Hard Rock, Miami"},
+  {id:"R88",phase:"16avos",date:"2026-07-03",time:"21:00",t1:"2°G",t2:"2°H",g:"16avos · P88",v:"Arrowhead, Kansas City"},
+  // ===== OCTAVOS (4-7 jul, 8 partidos) =====
+  {id:"O89",phase:"octavos",date:"2026-07-04",time:"16:00",t1From:"R73",t2From:"R74",g:"Octavos · P89",v:"Lincoln, Filadelfia"},
+  {id:"O90",phase:"octavos",date:"2026-07-04",time:"21:00",t1From:"R75",t2From:"R76",g:"Octavos · P90",v:"NRG, Houston"},
+  {id:"O91",phase:"octavos",date:"2026-07-05",time:"16:00",t1From:"R77",t2From:"R78",g:"Octavos · P91",v:"MetLife, NJ"},
+  {id:"O92",phase:"octavos",date:"2026-07-05",time:"21:00",t1From:"R79",t2From:"R80",g:"Octavos · P92",v:"Azteca, CDMX"},
+  {id:"O93",phase:"octavos",date:"2026-07-06",time:"16:00",t1From:"R81",t2From:"R82",g:"Octavos · P93",v:"AT&T, Dallas"},
+  {id:"O94",phase:"octavos",date:"2026-07-06",time:"21:00",t1From:"R83",t2From:"R84",g:"Octavos · P94",v:"Lumen, Seattle"},
+  {id:"O95",phase:"octavos",date:"2026-07-07",time:"16:00",t1From:"R85",t2From:"R86",g:"Octavos · P95",v:"Mercedes-Benz, Atlanta"},
+  {id:"O96",phase:"octavos",date:"2026-07-07",time:"21:00",t1From:"R87",t2From:"R88",g:"Octavos · P96",v:"BC Place, Vancouver"},
+  // ===== CUARTOS (8-11 jul, 4 partidos) =====
+  {id:"Q97",phase:"cuartos",date:"2026-07-08",time:"18:00",t1From:"O89",t2From:"O90",g:"Cuartos · P97",v:"Gillette, Boston"},
+  {id:"Q98",phase:"cuartos",date:"2026-07-09",time:"18:00",t1From:"O91",t2From:"O92",g:"Cuartos · P98",v:"Hard Rock, Miami"},
+  {id:"Q99",phase:"cuartos",date:"2026-07-10",time:"18:00",t1From:"O93",t2From:"O94",g:"Cuartos · P99",v:"Arrowhead, Kansas City"},
+  {id:"Q100",phase:"cuartos",date:"2026-07-11",time:"18:00",t1From:"O95",t2From:"O96",g:"Cuartos · P100",v:"SoFi, Los Ángeles"},
+  // ===== SEMIFINALES (14-15 jul, 2 partidos) =====
+  {id:"S101",phase:"semis",date:"2026-07-14",time:"20:00",t1From:"Q97",t2From:"Q98",g:"Semifinal · P101",v:"AT&T, Dallas"},
+  {id:"S102",phase:"semis",date:"2026-07-15",time:"20:00",t1From:"Q99",t2From:"Q100",g:"Semifinal · P102",v:"Mercedes-Benz, Atlanta"},
+  // ===== TERCER PUESTO Y FINAL =====
+  {id:"T103",phase:"final",date:"2026-07-18",time:"16:00",t1FromLoser:"S101",t2FromLoser:"S102",g:"3er Puesto · P103",v:"Hard Rock, Miami"},
+  {id:"F104",phase:"final",date:"2026-07-19",time:"16:00",t1From:"S101",t2From:"S102",g:"GRAN FINAL · P104",v:"MetLife, New Jersey"}
 ];
 
 const PHASES = [
-  {id:"grupos",label:"Fase de Grupos"},{id:"32avos",label:"32avos"},
+  {id:"grupos",label:"Fase de Grupos"},{id:"16avos",label:"16avos"},
   {id:"octavos",label:"Octavos"},{id:"cuartos",label:"Cuartos"},
-  {id:"semis",label:"Semifinales"},{id:"final",label:"Final"}
+  {id:"semis",label:"Semifinales"},{id:"final",label:"3er Puesto y Final"}
 ];
 
 let matchData = {}, eventData = {}, standings = {};
@@ -263,22 +327,40 @@ const isReal = (n) => !!TEAMS[n];
 
 function resolveTeam(match, side){
   const fromKey = side==='t1' ? match.t1From : match.t2From;
-  if(!fromKey) return side==='t1' ? match.t1 : match.t2;
-  const prevData = matchData[fromKey];
-  if(!prevData || prevData.winner==null) return `Gan. ${fromKey}`;
-  return prevData.winner;
+  const loserKey = side==='t1' ? match.t1FromLoser : match.t2FromLoser;
+  if(fromKey){
+    const prevData = matchData[fromKey];
+    if(!prevData || prevData.winner==null) return `Gan. ${fromKey}`;
+    return prevData.winner;
+  }
+  if(loserKey){
+    const prevData = matchData[loserKey];
+    const prevMatch = MATCHES.find(m=>m.id===loserKey);
+    if(!prevData || !prevData.winner || !prevMatch) return `Per. ${loserKey}`;
+    const t1Prev = resolveTeam(prevMatch,'t1'), t2Prev = resolveTeam(prevMatch,'t2');
+    return prevData.winner===t1Prev ? t2Prev : t1Prev;
+  }
+  return side==='t1' ? match.t1 : match.t2;
 }
 
 function originText(match, side){
   const fromKey = side==='t1' ? match.t1From : match.t2From;
-  if(!fromKey) return null;
-  const d = matchData[fromKey];
-  const prev = MATCHES.find(m=>m.id===fromKey);
-  if(!d || !d.winner) return `Por definir en ${fromKey}`;
+  const loserKey = side==='t1' ? match.t1FromLoser : match.t2FromLoser;
+  const key = fromKey || loserKey;
+  if(!key) return null;
+  const d = matchData[key];
+  const prev = MATCHES.find(m=>m.id===key);
+  if(!d || !d.winner) return `Por definir en ${key}`;
   const t1Name = resolveTeam(prev,'t1'), t2Name = resolveTeam(prev,'t2');
-  const loser = d.winner===t1Name ? t2Name : t1Name;
-  const ws = d.winner===t1Name ? d.s1 : d.s2;
-  const ls = d.winner===t1Name ? d.s2 : d.s1;
+  const winner = d.winner;
+  const loser = winner===t1Name ? t2Name : t1Name;
+  const ws = winner===t1Name ? d.s1 : d.s2;
+  const ls = winner===t1Name ? d.s2 : d.s1;
+  if(loserKey){
+    let txt = `Perdió con ${winner} ${ls}-${ws}`;
+    if(d.pens1!=null && d.pens2!=null) txt += ` (pen ${d.pens1}-${d.pens2})`;
+    return txt;
+  }
   let txt = `Venció a ${loser} ${ws}-${ls}`;
   if(d.pens1!=null && d.pens2!=null) txt += ` (pen ${d.pens1}-${d.pens2})`;
   return txt;
@@ -433,7 +515,7 @@ function renderEvent(e, t1Name, t2Name){
 
 function renderAdminPanel(m, t1Name, t2Name){
   const d = matchData[m.id] || {};
-  const isKnock = ['octavos','cuartos','semis','final','32avos'].includes(m.phase);
+  const isKnock = ['octavos','cuartos','semis','final','16avos'].includes(m.phase);
   return `<div class="mt-6 border-t-2 border-dashed border-[var(--c-secondary)] pt-5">
     <div class="text-xs uppercase tracking-widest font-black text-[var(--c-secondary-dark)] mb-3">🛠️ Panel admin</div>
     <div class="mb-4"><div class="text-xs font-bold text-[var(--c-ink-soft)] mb-2">Marcador</div>
