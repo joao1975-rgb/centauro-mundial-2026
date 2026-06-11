@@ -603,6 +603,8 @@ function wireAdminPanel(m, t1Name, t2Name){
 }
 
 const FD_BASE = 'https://api.football-data.org/v4';
+// Deploy worker.js to Cloudflare Workers and put its URL here:
+const CF_WORKER = localStorage.getItem('cf_worker_url') || '';
 const CORS_PROXIES = [
   url => 'https://corsproxy.io/?' + encodeURIComponent(url),
   url => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
@@ -610,6 +612,14 @@ const CORS_PROXIES = [
 ];
 async function fdFetch(path){
   const fullUrl = FD_BASE + path;
+  // 1. Try Cloudflare Worker proxy (most reliable)
+  if(CF_WORKER){
+    try {
+      const r = await fetch(CF_WORKER + '/v4' + path, { headers: {'X-Auth-Token': FOOTBALL_API_KEY} });
+      if(r.ok) return await r.json();
+    } catch(e){}
+  }
+  // 2. Try direct (works on localhost)
   try {
     const r = await fetch(fullUrl, { headers: {'X-Auth-Token': FOOTBALL_API_KEY} });
     if(!r.ok) throw new Error('HTTP '+r.status);
@@ -617,6 +627,7 @@ async function fdFetch(path){
   } catch(directErr) {
     const urlWithToken = fullUrl + (fullUrl.includes('?')?'&':'?') + 'X-Auth-Token=' + FOOTBALL_API_KEY;
     const errors = ['Directo: '+directErr.message];
+    // 3. Try public CORS proxies as last resort
     for(const mkProxy of CORS_PROXIES){
       try {
         const r = await fetch(mkProxy(urlWithToken));

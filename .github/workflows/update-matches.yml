@@ -1,0 +1,20 @@
+name: Update World Cup Matches
+on:
+  schedule:
+    # Every 15 min during match hours (11:00-01:00 UTC-4 = 15:00-05:00 UTC)
+    - cron: '*/15 15-23,0-5 * 6-7 *'
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Fetch and update matches
+        env:
+          FOOTBALL_API_KEY: ${{ secrets.FOOTBALL_API_KEY }}
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+        run: node scripts/sync-matches.js
