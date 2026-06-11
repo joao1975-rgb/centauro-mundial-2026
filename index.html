@@ -528,25 +528,43 @@ function renderAdminPanel(m, t1Name, t2Name){
       <div class="flex gap-2 mt-3"><button id="adm-save-score" class="btn-prim flex-1">Guardar marcador</button><button id="adm-import-api" class="btn-orange" title="Importar de football-data.org">📡 API</button></div>
     </div>
     <div class="mb-4"><div class="text-xs font-bold text-[var(--c-ink-soft)] mb-2">Agregar evento (gol, tarjeta, cambio)</div>
-      <div class="grid grid-cols-2 gap-2 mb-2"><select id="evt-type" class="fld"><option value="goal">⚽ Gol</option><option value="yellow">🟨 Amarilla</option><option value="red">🟥 Roja</option><option value="sub">🔁 Cambio</option></select><select id="evt-team" class="fld"><option value="t1">${t1Name}</option><option value="t2">${t2Name}</option></select></div>
-      <div class="grid grid-cols-3 gap-2 mb-2"><input id="evt-min" type="number" min="0" max="130" placeholder="Minuto" class="fld"><input id="evt-player" placeholder="Jugador" class="fld col-span-2"></div>
-      <div class="grid grid-cols-2 gap-2 mb-2"><select id="evt-goal-type" class="fld"><option value="play">De jugada</option><option value="penalty">Penal</option><option value="freekick">Tiro libre</option><option value="header">Cabezazo</option><option value="own">Autogol</option></select><input id="evt-out" placeholder="Sale (si es cambio)" class="fld"></div>
+      <div class="grid grid-cols-2 gap-2 mb-2">
+        <div><label class="text-[10px] font-bold uppercase text-[var(--c-ink-soft)]">Tipo de evento</label><select id="evt-type" class="fld"><option value="goal">⚽ Gol</option><option value="yellow">🟨 Amarilla</option><option value="red">🟥 Roja</option><option value="sub">🔁 Cambio</option></select></div>
+        <div><label class="text-[10px] font-bold uppercase text-[var(--c-ink-soft)]">Equipo</label><select id="evt-team" class="fld"><option value="t1">${t1Name}</option><option value="t2">${t2Name}</option></select></div>
+      </div>
+      <div class="grid grid-cols-3 gap-2 mb-2">
+        <div><label class="text-[10px] font-bold uppercase text-[var(--c-ink-soft)]">Minuto</label><input id="evt-min" type="number" min="0" max="130" placeholder="45" class="fld"></div>
+        <div class="col-span-2"><label class="text-[10px] font-bold uppercase text-[var(--c-ink-soft)]">Nombre del jugador</label><input id="evt-player" placeholder="Ej: Messi" class="fld"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-2 mb-2">
+        <div><label class="text-[10px] font-bold uppercase text-[var(--c-ink-soft)]">Tipo de gol</label><select id="evt-goal-type" class="fld"><option value="play">De jugada</option><option value="penalty">Penal</option><option value="freekick">Tiro libre</option><option value="header">Cabezazo</option><option value="own">Autogol</option></select></div>
+        <div><label class="text-[10px] font-bold uppercase text-[var(--c-ink-soft)]">Sale (si es cambio)</label><input id="evt-out" placeholder="Jugador que sale" class="fld"></div>
+      </div>
       <button id="adm-add-evt" class="btn-prim w-full">Agregar evento</button>
     </div>
     <div class="mb-3"><div class="text-xs font-bold text-[var(--c-ink-soft)] mb-2">Estadísticas (opcional)</div>
-      <div class="grid grid-cols-2 gap-2">
-        <input id="adm-poss1" type="number" placeholder="Posesión local %" class="fld" value="${d.poss1??''}">
-        <input id="adm-poss2" type="number" placeholder="Posesión visita %" class="fld" value="${d.poss2??''}">
-        <input id="adm-shots1" type="number" placeholder="Tiros local" class="fld" value="${d.shots1??''}">
-        <input id="adm-shots2" type="number" placeholder="Tiros visita" class="fld" value="${d.shots2??''}">
-        <input id="adm-corners1" type="number" placeholder="Córners local" class="fld" value="${d.corners1??''}">
-        <input id="adm-corners2" type="number" placeholder="Córners visita" class="fld" value="${d.corners2??''}">
-        <input id="adm-fouls1" type="number" placeholder="Faltas local" class="fld" value="${d.fouls1??''}">
-        <input id="adm-fouls2" type="number" placeholder="Faltas visita" class="fld" value="${d.fouls2??''}">
-        <input id="adm-passes1" type="number" placeholder="Pases local" class="fld" value="${d.passes1??''}">
-        <input id="adm-passes2" type="number" placeholder="Pases visita" class="fld" value="${d.passes2??''}">
-        <input id="adm-offsides1" type="number" placeholder="Offsides local" class="fld" value="${d.offsides1??''}">
-        <input id="adm-offsides2" type="number" placeholder="Offsides visita" class="fld" value="${d.offsides2??''}">
+      <div class="grid grid-cols-[1fr_auto_1fr] gap-x-2 gap-y-1 items-center">
+        <div class="text-[10px] font-black uppercase text-center text-[var(--c-primary)]">${t1Name}</div>
+        <div class="text-[10px] font-bold uppercase text-center text-[var(--c-ink-soft)]">Stat</div>
+        <div class="text-[10px] font-black uppercase text-center text-[var(--c-secondary-dark)]">${t2Name}</div>
+        <input id="adm-poss1" type="number" placeholder="%" class="fld text-center" value="${d.poss1??''}">
+        <div class="text-[10px] font-bold text-center text-[var(--c-ink-soft)]">Posesión %</div>
+        <input id="adm-poss2" type="number" placeholder="%" class="fld text-center" value="${d.poss2??''}">
+        <input id="adm-shots1" type="number" placeholder="0" class="fld text-center" value="${d.shots1??''}">
+        <div class="text-[10px] font-bold text-center text-[var(--c-ink-soft)]">Tiros al arco</div>
+        <input id="adm-shots2" type="number" placeholder="0" class="fld text-center" value="${d.shots2??''}">
+        <input id="adm-corners1" type="number" placeholder="0" class="fld text-center" value="${d.corners1??''}">
+        <div class="text-[10px] font-bold text-center text-[var(--c-ink-soft)]">Córners</div>
+        <input id="adm-corners2" type="number" placeholder="0" class="fld text-center" value="${d.corners2??''}">
+        <input id="adm-fouls1" type="number" placeholder="0" class="fld text-center" value="${d.fouls1??''}">
+        <div class="text-[10px] font-bold text-center text-[var(--c-ink-soft)]">Faltas</div>
+        <input id="adm-fouls2" type="number" placeholder="0" class="fld text-center" value="${d.fouls2??''}">
+        <input id="adm-passes1" type="number" placeholder="0" class="fld text-center" value="${d.passes1??''}">
+        <div class="text-[10px] font-bold text-center text-[var(--c-ink-soft)]">Pases</div>
+        <input id="adm-passes2" type="number" placeholder="0" class="fld text-center" value="${d.passes2??''}">
+        <input id="adm-offsides1" type="number" placeholder="0" class="fld text-center" value="${d.offsides1??''}">
+        <div class="text-[10px] font-bold text-center text-[var(--c-ink-soft)]">F. de juego</div>
+        <input id="adm-offsides2" type="number" placeholder="0" class="fld text-center" value="${d.offsides2??''}">
       </div>
       <button id="adm-save-stats" class="btn-sec w-full mt-2">Guardar estadísticas</button>
     </div>
