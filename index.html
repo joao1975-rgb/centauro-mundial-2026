@@ -527,21 +527,6 @@ function renderAdminPanel(m, t1Name, t2Name){
       <div class="mt-2"><label class="text-[10px] font-bold uppercase">Estado</label><select id="adm-status" class="fld"><option value="scheduled" ${d.status==='scheduled'||!d.status?'selected':''}>Programado</option><option value="live" ${d.status==='live'?'selected':''}>En vivo</option><option value="finished" ${d.status==='finished'?'selected':''}>Finalizado</option></select></div>
       <div class="flex gap-2 mt-3"><button id="adm-save-score" class="btn-prim flex-1">Guardar marcador</button><button id="adm-import-api" class="btn-orange" title="Importar de football-data.org">📡 API</button></div>
     </div>
-    <div class="mb-4"><div class="text-xs font-bold text-[var(--c-ink-soft)] mb-2">Agregar evento (gol, tarjeta, cambio)</div>
-      <div class="grid grid-cols-2 gap-2 mb-2">
-        <div><label class="text-[10px] font-bold uppercase text-[var(--c-ink-soft)]">Tipo de evento</label><select id="evt-type" class="fld"><option value="goal">⚽ Gol</option><option value="yellow">🟨 Amarilla</option><option value="red">🟥 Roja</option><option value="sub">🔁 Cambio</option></select></div>
-        <div><label class="text-[10px] font-bold uppercase text-[var(--c-ink-soft)]">Equipo</label><select id="evt-team" class="fld"><option value="t1">${t1Name}</option><option value="t2">${t2Name}</option></select></div>
-      </div>
-      <div class="grid grid-cols-3 gap-2 mb-2">
-        <div><label class="text-[10px] font-bold uppercase text-[var(--c-ink-soft)]">Minuto</label><input id="evt-min" type="number" min="0" max="130" placeholder="45" class="fld"></div>
-        <div class="col-span-2"><label class="text-[10px] font-bold uppercase text-[var(--c-ink-soft)]">Nombre del jugador</label><input id="evt-player" placeholder="Ej: Messi" class="fld"></div>
-      </div>
-      <div class="grid grid-cols-2 gap-2 mb-2">
-        <div><label class="text-[10px] font-bold uppercase text-[var(--c-ink-soft)]">Tipo de gol</label><select id="evt-goal-type" class="fld"><option value="play">De jugada</option><option value="penalty">Penal</option><option value="freekick">Tiro libre</option><option value="header">Cabezazo</option><option value="own">Autogol</option></select></div>
-        <div><label class="text-[10px] font-bold uppercase text-[var(--c-ink-soft)]">Sale (si es cambio)</label><input id="evt-out" placeholder="Jugador que sale" class="fld"></div>
-      </div>
-      <button id="adm-add-evt" class="btn-prim w-full">Agregar evento</button>
-    </div>
     <div class="mb-3"><div class="text-xs font-bold text-[var(--c-ink-soft)] mb-2">Estadísticas (opcional)</div>
       <div class="grid grid-cols-[1fr_auto_1fr] gap-x-2 gap-y-1 items-center">
         <div class="text-[10px] font-black uppercase text-center text-[var(--c-primary)]">${t1Name}</div>
@@ -589,14 +574,6 @@ function wireAdminPanel(m, t1Name, t2Name){
     await setDoc(doc(db,'matches',m.id), data, {merge:true});
     await recalcStandingsForGroup(m);
     alert('✅ Marcador guardado');
-  };
-  $('adm-add-evt').onclick = async () => {
-    const evt = { matchId: m.id, type: $('evt-type').value, team: $('evt-team').value, minute: parseInt($('evt-min').value)||0, player: $('evt-player').value.trim() };
-    if(evt.type==='goal') evt.goalType = $('evt-goal-type').value;
-    if(evt.type==='sub'){ evt.playerOut = $('evt-out').value.trim(); }
-    if(!evt.player && evt.type!=='sub'){ alert('Indica el jugador'); return; }
-    await addDoc(collection(db,'events'), {...evt, createdAt: serverTimestamp()});
-    $('evt-min').value=''; $('evt-player').value=''; $('evt-out').value='';
   };
   $('adm-save-stats').onclick = async () => {
     const data = {};
