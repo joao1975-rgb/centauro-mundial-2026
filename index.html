@@ -603,17 +603,30 @@ function wireAdminPanel(m, t1Name, t2Name){
 }
 
 const FD_BASE = 'https://api.football-data.org/v4';
+const CORS_PROXIES = [
+  url => 'https://corsproxy.io/?' + encodeURIComponent(url),
+  url => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
+  url => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url),
+];
 async function fdFetch(path){
+  const fullUrl = FD_BASE + path;
   try {
-    const r = await fetch(FD_BASE+path, { headers: {'X-Auth-Token': FOOTBALL_API_KEY} });
+    const r = await fetch(fullUrl, { headers: {'X-Auth-Token': FOOTBALL_API_KEY} });
     if(!r.ok) throw new Error('HTTP '+r.status);
     return await r.json();
-  } catch(e) {
-    const proxy = 'https://corsproxy.io/?';
-    const url = FD_BASE+path+(path.includes('?')?'&':'?')+'X-Auth-Token='+FOOTBALL_API_KEY;
-    const r = await fetch(proxy+encodeURIComponent(url));
-    if(!r.ok) throw new Error('Proxy HTTP '+r.status);
-    return await r.json();
+  } catch(directErr) {
+    const urlWithToken = fullUrl + (fullUrl.includes('?')?'&':'?') + 'X-Auth-Token=' + FOOTBALL_API_KEY;
+    const errors = ['Directo: '+directErr.message];
+    for(const mkProxy of CORS_PROXIES){
+      try {
+        const r = await fetch(mkProxy(urlWithToken));
+        if(!r.ok) throw new Error('HTTP '+r.status);
+        const data = await r.json();
+        if(data.matches || data.competition || data.id) return data;
+        throw new Error('Respuesta no válida');
+      } catch(pe){ errors.push(pe.message); }
+    }
+    throw new Error('API no accesible (CORS). football-data.org solo permite llamadas desde localhost en plan gratuito. Usa el panel admin manualmente o ejecuta la app en localhost. Detalles: ' + errors.join(' | '));
   }
 }
 
