@@ -138,9 +138,9 @@ input[type=number]{-moz-appearance:textfield;}
   </div>
 </div>
 
-<div id="match-modal" class="fixed inset-0 modal-bg z-50 hidden items-center justify-center p-4 overflow-y-auto">
-  <div class="bg-white rounded-3xl w-full max-w-2xl my-8 overflow-hidden shadow-2xl">
-    <div class="brand-grad px-6 py-4 text-white flex justify-between items-start">
+<div id="match-modal" class="fixed inset-0 modal-bg z-50 hidden items-center justify-center p-4">
+  <div class="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+    <div class="brand-grad px-6 py-4 text-white flex justify-between items-start flex-shrink-0">
       <div class="min-w-0 flex-1">
         <div id="mm-phase" class="text-[10px] uppercase tracking-widest font-bold opacity-80"></div>
         <div id="mm-title" class="font-black text-lg"></div>
@@ -148,7 +148,7 @@ input[type=number]{-moz-appearance:textfield;}
       </div>
       <button id="mm-close" class="w-9 h-9 rounded-full bg-white/15 hover:bg-white/30 text-white text-xl font-bold flex-shrink-0">×</button>
     </div>
-    <div class="p-6" id="mm-body"></div>
+    <div class="p-6 overflow-y-auto flex-1" id="mm-body"></div>
   </div>
 </div>
 
