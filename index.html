@@ -635,18 +635,24 @@ async function fdFetch(path){
   }
 }
 
+const ES_TO_EN = {'México':'Mexico','Sudáfrica':'South Africa','Corea del Sur':'Korea Republic','Rep. Checa':'Czechia','Canadá':'Canada','Bosnia':'Bosnia-Herzegovina','EE. UU.':'United States','Catar':'Qatar','Brasil':'Brazil','Marruecos':'Morocco','Haití':'Haiti','Escocia':'Scotland','Turquía':'Turkey','Alemania':'Germany','Curazao':'Curaçao','Países Bajos':'Netherlands','Japón':'Japan','Costa de Marfil':"Côte d'Ivoire",'Suecia':'Sweden','Túnez':'Tunisia','España':'Spain','Cabo Verde':'Cape Verde','Bélgica':'Belgium','Egipto':'Egypt','Arabia Saudita':'Saudi Arabia','Irán':'Iran','Nva. Zelanda':'New Zealand','Francia':'France','Iraq':'Iraq','Noruega':'Norway','Argelia':'Algeria','Jordania':'Jordan','RD Congo':'DR Congo','Inglaterra':'England','Croacia':'Croatia','Panamá':'Panama','Uzbekistán':'Uzbekistan'};
 async function importFromFootballAPI(m, t1Name, t2Name){
   const data = await fdFetch('/competitions/WC/matches?dateFrom='+m.date+'&dateTo='+m.date);
   if(!data.matches || data.matches.length===0) throw new Error('Sin partidos en esa fecha en API');
-  const norm = s => (s||'').toLowerCase().replace(/[^a-z]/g,'');
-  const t1N = norm(t1Name), t2N = norm(t2Name);
+  const norm = s => (s||'').toLowerCase().replace(/[^a-záéíóúñü]/g,'');
+  const t1En = ES_TO_EN[t1Name]||t1Name, t2En = ES_TO_EN[t2Name]||t2Name;
   const found = data.matches.find(x => {
-    const h = norm(x.homeTeam?.name||''), a = norm(x.awayTeam?.name||'');
-    return (h.includes(t1N.slice(0,4)) && a.includes(t2N.slice(0,4))) || (h.includes(t2N.slice(0,4)) && a.includes(t1N.slice(0,4)));
+    const hName = x.homeTeam?.name||'', aName = x.awayTeam?.name||'';
+    const hShort = x.homeTeam?.shortName||'', aShort = x.awayTeam?.shortName||'';
+    const all = [hName,hShort].join('|').toLowerCase();
+    const allA = [aName,aShort].join('|').toLowerCase();
+    const matchT1 = all.includes(t1En.toLowerCase()) || allA.includes(t1En.toLowerCase());
+    const matchT2 = all.includes(t2En.toLowerCase()) || allA.includes(t2En.toLowerCase());
+    return matchT1 && matchT2;
   });
-  if(!found) throw new Error('Partido no encontrado en el fixture API');
+  if(!found) throw new Error('Partido no encontrado en el fixture API. Equipos: '+t1En+' / '+t2En);
   const full = found.score?.fullTime;
-  const swap = norm(found.homeTeam.name).includes(t2N.slice(0,4));
+  const swap = (found.homeTeam?.name||'').toLowerCase().includes(t2En.toLowerCase().slice(0,4));
   const update = { updatedAt: serverTimestamp(), t1:t1Name, t2:t2Name, phase:m.phase, g:m.g };
   if(full && full.home!=null){
     update.s1 = swap ? full.away : full.home;
@@ -662,7 +668,8 @@ async function importFromFootballAPI(m, t1Name, t2Name){
         const existing = await getDocs(query(collection(db,'events'), where('matchId','==',m.id)));
         const batch = writeBatch(db); existing.forEach(d=>batch.delete(d.ref)); await batch.commit();
         for(const g of detail.goals){
-          const scorerTeam = norm(g.team?.name||'').includes(norm(t1Name).slice(0,4)) ? 't1' : 't2';
+          const isHomeGoal = g.team?.id === found.homeTeam?.id;
+          const scorerTeam = (isHomeGoal && !swap) || (!isHomeGoal && swap) ? 't1' : 't2';
           await addDoc(collection(db,'events'), { matchId: m.id, type:'goal', minute: g.minute||0, player: g.scorer?.name||'(desconocido)', team: scorerTeam, goalType: g.type==='PENALTY'?'penalty':g.type==='OWN'?'own':'play', createdAt: serverTimestamp() });
         }
       }
