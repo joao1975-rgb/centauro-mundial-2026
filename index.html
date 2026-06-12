@@ -635,24 +635,24 @@ async function fdFetch(path){
   }
 }
 
-const ES_TO_EN = {'México':'Mexico','Sudáfrica':'South Africa','Corea del Sur':'Korea Republic','Rep. Checa':'Czechia','Canadá':'Canada','Bosnia':'Bosnia-Herzegovina','EE. UU.':'United States','Catar':'Qatar','Brasil':'Brazil','Marruecos':'Morocco','Haití':'Haiti','Escocia':'Scotland','Turquía':'Turkey','Alemania':'Germany','Curazao':'Curaçao','Países Bajos':'Netherlands','Japón':'Japan','Costa de Marfil':"Côte d'Ivoire",'Suecia':'Sweden','Túnez':'Tunisia','España':'Spain','Cabo Verde':'Cape Verde','Bélgica':'Belgium','Egipto':'Egypt','Arabia Saudita':'Saudi Arabia','Irán':'Iran','Nva. Zelanda':'New Zealand','Francia':'France','Iraq':'Iraq','Noruega':'Norway','Argelia':'Algeria','Jordania':'Jordan','RD Congo':'DR Congo','Inglaterra':'England','Croacia':'Croatia','Panamá':'Panama','Uzbekistán':'Uzbekistan'};
+const ES_TO_API = {'México':['Mexico'],'Sudáfrica':['South Africa'],'Corea del Sur':['Korea Republic','South Korea'],'Rep. Checa':['Czechia','Czech Republic'],'Canadá':['Canada'],'Bosnia':['Bosnia-Herzegovina','Bosnia and Herzegovina','Bosnia-H.'],'EE. UU.':['United States','USA'],'Catar':['Qatar'],'Brasil':['Brazil'],'Marruecos':['Morocco'],'Haití':['Haiti'],'Escocia':['Scotland'],'Turquía':['Turkey'],'Alemania':['Germany'],'Curazao':['Curaçao','Curacao'],'Países Bajos':['Netherlands'],'Japón':['Japan'],'Costa de Marfil':["Côte d'Ivoire",'Ivory Coast'],'Suecia':['Sweden'],'Túnez':['Tunisia'],'España':['Spain'],'Cabo Verde':['Cape Verde'],'Bélgica':['Belgium'],'Egipto':['Egypt'],'Arabia Saudita':['Saudi Arabia'],'Irán':['Iran'],'Nva. Zelanda':['New Zealand'],'Francia':['France'],'Iraq':['Iraq'],'Noruega':['Norway'],'Argelia':['Algeria'],'Jordania':['Jordan'],'RD Congo':['DR Congo','Congo DR'],'Inglaterra':['England'],'Croacia':['Croatia'],'Panamá':['Panama'],'Uzbekistán':['Uzbekistan'],'Austria':['Austria'],'Ghana':['Ghana'],'Senegal':['Senegal'],'Portugal':['Portugal'],'Argentina':['Argentina'],'Colombia':['Colombia'],'Uruguay':['Uruguay'],'Ecuador':['Ecuador'],'Australia':['Australia']};
+function apiTeamMatch(apiName, apiShort, esName){
+  const variants = ES_TO_API[esName] || [esName];
+  const hay = [apiName,apiShort].join('|').toLowerCase();
+  return variants.some(v => hay.includes(v.toLowerCase()));
+}
 async function importFromFootballAPI(m, t1Name, t2Name){
-  const data = await fdFetch('/competitions/WC/matches?dateFrom='+m.date+'&dateTo='+m.date);
+  const nextDay = new Date(new Date(m.date+'T00:00:00').getTime()+86400000).toISOString().slice(0,10);
+  const data = await fdFetch('/competitions/WC/matches?dateFrom='+m.date+'&dateTo='+nextDay);
   if(!data.matches || data.matches.length===0) throw new Error('Sin partidos en esa fecha en API');
-  const norm = s => (s||'').toLowerCase().replace(/[^a-záéíóúñü]/g,'');
-  const t1En = ES_TO_EN[t1Name]||t1Name, t2En = ES_TO_EN[t2Name]||t2Name;
   const found = data.matches.find(x => {
-    const hName = x.homeTeam?.name||'', aName = x.awayTeam?.name||'';
-    const hShort = x.homeTeam?.shortName||'', aShort = x.awayTeam?.shortName||'';
-    const all = [hName,hShort].join('|').toLowerCase();
-    const allA = [aName,aShort].join('|').toLowerCase();
-    const matchT1 = all.includes(t1En.toLowerCase()) || allA.includes(t1En.toLowerCase());
-    const matchT2 = all.includes(t2En.toLowerCase()) || allA.includes(t2En.toLowerCase());
-    return matchT1 && matchT2;
+    const hMatch = apiTeamMatch(x.homeTeam?.name||'', x.homeTeam?.shortName||'', t1Name) || apiTeamMatch(x.homeTeam?.name||'', x.homeTeam?.shortName||'', t2Name);
+    const aMatch = apiTeamMatch(x.awayTeam?.name||'', x.awayTeam?.shortName||'', t1Name) || apiTeamMatch(x.awayTeam?.name||'', x.awayTeam?.shortName||'', t2Name);
+    return hMatch && aMatch;
   });
-  if(!found) throw new Error('Partido no encontrado en el fixture API. Equipos: '+t1En+' / '+t2En);
+  if(!found) throw new Error('Partido no encontrado en fixture API');
   const full = found.score?.fullTime;
-  const swap = (found.homeTeam?.name||'').toLowerCase().includes(t2En.toLowerCase().slice(0,4));
+  const swap = apiTeamMatch(found.homeTeam?.name||'', found.homeTeam?.shortName||'', t2Name);
   const update = { updatedAt: serverTimestamp(), t1:t1Name, t2:t2Name, phase:m.phase, g:m.g };
   if(full && full.home!=null){
     update.s1 = swap ? full.away : full.home;
