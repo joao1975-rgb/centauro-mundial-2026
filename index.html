@@ -598,8 +598,7 @@ function wireAdminPanel(m, t1Name, t2Name){
 }
 
 const FD_BASE = 'https://api.football-data.org/v4';
-// Deploy worker.js to Cloudflare Workers and put its URL here:
-const CF_WORKER = localStorage.getItem('cf_worker_url') || '';
+const CF_WORKER = localStorage.getItem('cf_worker_url') || 'https://green-bird-a978-centauro-api-proxy.centauroadss.workers.dev';
 const CORS_PROXIES = [
   url => 'https://corsproxy.io/?' + encodeURIComponent(url),
   url => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
