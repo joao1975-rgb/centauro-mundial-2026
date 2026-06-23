@@ -1,17 +1,18 @@
-// sync-matches.js — GitHub Action that syncs football-data.org → Firebase
+// sync-matches.js — GitHub Action that syncs Sportmonks v3 → Firebase
 // Runs server-side: no CORS issues, full API access
 
-const FOOTBALL_API_KEY = process.env.FOOTBALL_API_KEY;
+const SPORTMONKS_TOKEN = process.env.SPORTMONKS_TOKEN || 'Gh7ARv5qQgeqC9HaSdeGiV7mWWqNqAvdcackmfPivzEQSRvUEorH0pkWzT9o';
 const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY;
 const FIREBASE_PROJECT = 'centauro-mundial-2026';
 const FIRESTORE_BASE = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 
 const TEAM_MAP = {
   'Mexico': 'México', 'South Africa': 'Sudáfrica', 'Korea Republic': 'Corea del Sur',
-  'Czechia': 'Rep. Checa', 'Canada': 'Canadá', 'Bosnia-Herzegovina': 'Bosnia', 'Bosnia and Herzegovina': 'Bosnia',
+  'Czechia': 'Rep. Checa', 'Czech Republic': 'Rep. Checa', 'Canada': 'Canadá',
+  'Bosnia-Herzegovina': 'Bosnia', 'Bosnia and Herzegovina': 'Bosnia',
   'United States': 'EE. UU.', 'USA': 'EE. UU.', 'Qatar': 'Catar',
   'Brazil': 'Brasil', 'Morocco': 'Marruecos', 'Haiti': 'Haití', 'Scotland': 'Escocia',
-  'Australia': 'Australia', 'Turkey': 'Turquía', 'Germany': 'Alemania', 'Curaçao': 'Curazao',
+  'Australia': 'Australia', 'Turkey': 'Turquía', 'Türkiye': 'Turquía', 'Germany': 'Alemania', 'Curaçao': 'Curazao', 'Curaçao': 'Curazao',
   'Netherlands': 'Países Bajos', 'Japan': 'Japón', 'Ivory Coast': 'Costa de Marfil', "Côte d'Ivoire": 'Costa de Marfil',
   'Ecuador': 'Ecuador', 'Sweden': 'Suecia', 'Tunisia': 'Túnez',
   'Spain': 'España', 'Cape Verde': 'Cabo Verde', 'Belgium': 'Bélgica', 'Egypt': 'Egipto',
@@ -42,15 +43,15 @@ function spanishName(name) {
   return TEAM_MAP[name] || name;
 }
 
-async function fdFetch(path) {
-  const url = `https://api.football-data.org/v4${path}`;
-  const res = await fetch(url, { headers: { 'X-Auth-Token': FOOTBALL_API_KEY } });
-  if (!res.ok) throw new Error(`football-data.org ${res.status}: ${await res.text()}`);
+async function smFetch(path) {
+  const url = `https://api.sportmonks.com/v3/football${path}${path.includes('?') ? '&' : '?'}api_token=${SPORTMONKS_TOKEN}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Sportmonks API ${res.status}: ${await res.text()}`);
   return res.json();
 }
 
-async function firebasePatch(collection, docId, fields) {
-  const url = `${FIRESTORE_BASE}/${collection}/${docId}?key=${FIREBASE_API_KEY}`;
+async function firebasePatch(collection, docId, fields, updateMaskParams = '') {
+  const url = `${FIRESTORE_BASE}/${collection}/${docId}?key=${FIREBASE_API_KEY}${updateMaskParams}`;
   const body = { fields: {} };
   for (const [k, v] of Object.entries(fields)) {
     if (v === null || v === undefined) continue;
@@ -74,6 +75,8 @@ async function firebasePost(collection, fields) {
     if (typeof v === 'number') body.fields[k] = { integerValue: String(v) };
     else if (typeof v === 'string') body.fields[k] = { stringValue: v };
   }
+  // Add createdAt
+  body.fields.createdAt = { stringValue: new Date().toISOString() };
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -84,7 +87,7 @@ async function firebasePost(collection, fields) {
 }
 
 async function getExistingEvents(matchId) {
-  const url = `${FIRESTORE_BASE}/events?key=${FIREBASE_API_KEY}`;
+  const url = `${FIRESTORE_BASE}/events?key=${FIREBASE_API_KEY}&pageSize=100`;
   const res = await fetch(url);
   if (!res.ok) return [];
   const data = await res.json();
@@ -94,114 +97,225 @@ async function getExistingEvents(matchId) {
   );
 }
 
-function matchIdFromTeams(homeEs, awayEs, group) {
-  const groupLetter = group?.replace('GROUP_', '');
-  const ids = GROUP_MATCH_IDS[groupLetter] || [];
-  // We'll match by returning candidate IDs — caller resolves
-  return ids;
+async function deleteEvent(docName) {
+  const url = `https://firestore.googleapis.com/v1/${docName}?key=${FIREBASE_API_KEY}`;
+  await fetch(url, { method: 'DELETE' });
+}
+
+function norm(s) {
+  return (s || '').toLowerCase().replace(/[^a-záéíóúñü]/g, '');
 }
 
 async function syncMatches() {
-  console.log('🔄 Fetching World Cup 2026 matches from football-data.org...');
-  const data = await fdFetch('/competitions/WC/matches?season=2026');
-  console.log(`📋 Found ${data.resultSet.count} matches (${data.resultSet.played} played)`);
-
+  console.log('🔄 Fetching fixtures range from Sportmonks v3...');
+  
+  // Calculate yesterday and tomorrow range in VET (UTC-4)
+  const today = new Date();
+  const yesterday = new Date(today.getTime() - 2 * 24 * 3600 * 1000);
+  const tomorrow = new Date(today.getTime() + 2 * 24 * 3600 * 1000);
+  
+  const pad = n => String(n).padStart(2, '0');
+  const fmtDate = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  
+  const startDate = fmtDate(yesterday);
+  const endDate = fmtDate(tomorrow);
+  
+  console.log(`Range: ${startDate} to ${endDate}`);
+  const url = `/fixtures/between/${startDate}/${endDate}?include=participants;scores;events.player;statistics.type`;
+  const res = await smFetch(url);
+  
+  if (!res.data || res.data.length === 0) {
+    console.log('No matches found in range.');
+    return;
+  }
+  
+  console.log(`📋 Found ${res.data.length} matches in API range.`);
+  
   let updated = 0;
-
-  for (const match of data.matches) {
-    if (match.status !== 'FINISHED' && match.status !== 'IN_PLAY') continue;
-
-    const homeEs = spanishName(match.homeTeam.shortName || match.homeTeam.name);
-    const awayEs = spanishName(match.awayTeam.shortName || match.awayTeam.name);
-    const score = match.score;
-
-    if (!score?.fullTime?.home && score?.fullTime?.home !== 0) continue;
-
-    // Find match ID by date + teams
-    const utcDate = match.utcDate;
-    const vetDate = new Date(new Date(utcDate).getTime() - 4 * 3600000);
-    const dateStr = vetDate.toISOString().slice(0, 10);
-
-    // Determine our internal match ID
+  
+  for (const fixture of res.data) {
+    const participants = fixture.participants || [];
+    const homeTeamObj = participants.find(p => p.meta?.location === 'home');
+    const awayTeamObj = participants.find(p => p.meta?.location === 'away');
+    
+    if (!homeTeamObj || !awayTeamObj) continue;
+    
+    const homeEs = spanishName(homeTeamObj.name || homeTeamObj.short_code);
+    const awayEs = spanishName(awayTeamObj.name || awayTeamObj.short_code);
+    
+    // Find matching Firestore Match ID
     let matchId = null;
-    if (match.stage === 'GROUP_STAGE') {
-      const groupLetter = match.group?.replace('GROUP_', '');
-      const candidates = GROUP_MATCH_IDS[groupLetter] || [];
-      // Match by team names — we check both orders
-      const norm = s => s.toLowerCase().replace(/[^a-záéíóúñü]/g, '');
-      // Read existing match docs to find the right one
+    let swap = false;
+    let groupLetter = null;
+    
+    // Try to match based on team names against our groups database
+    // We check all groups matching home/away teams
+    for (const [group, candidates] of Object.entries(GROUP_MATCH_IDS)) {
       for (const cid of candidates) {
         try {
-          const url = `${FIRESTORE_BASE}/matches/${cid}?key=${FIREBASE_API_KEY}`;
-          const res = await fetch(url);
-          if (res.ok) {
-            const doc = await res.json();
+          const mUrl = `${FIRESTORE_BASE}/matches/${cid}?key=${FIREBASE_API_KEY}`;
+          const mRes = await fetch(mUrl);
+          if (mRes.ok) {
+            const doc = await mRes.json();
             const t1 = doc.fields?.t1?.stringValue || '';
             const t2 = doc.fields?.t2?.stringValue || '';
-            if ((norm(t1) === norm(homeEs) && norm(t2) === norm(awayEs)) ||
-                (norm(t1) === norm(awayEs) && norm(t2) === norm(homeEs))) {
+            
+            if (norm(t1) === norm(homeEs) && norm(t2) === norm(awayEs)) {
               matchId = cid;
+              swap = false;
+              groupLetter = group;
+              break;
+            }
+            if (norm(t1) === norm(awayEs) && norm(t2) === norm(homeEs)) {
+              matchId = cid;
+              swap = true;
+              groupLetter = group;
               break;
             }
           }
-        } catch (e) { /* skip */ }
+        } catch (e) {}
       }
+      if (matchId) break;
     }
-
+    
     if (!matchId) {
-      console.log(`  ⚠️ Could not match: ${homeEs} vs ${awayEs} (${dateStr})`);
+      console.log(`  ⚠️ Could not match teams: ${homeEs} vs ${awayEs}`);
       continue;
     }
-
-    const s1 = score.fullTime.home;
-    const s2 = score.fullTime.away;
+    
+    // Extract scores
+    let s1 = null, s2 = null;
+    const scores = fixture.scores || [];
+    const currentScores = scores.filter(s => s.description === 'CURRENT');
+    if (currentScores.length > 0) {
+      const homeScoreObj = currentScores.find(s => s.participant_id === homeTeamObj.id);
+      const awayScoreObj = currentScores.find(s => s.participant_id !== homeTeamObj.id);
+      const apiHomeScore = homeScoreObj ? homeScoreObj.score.goals : 0;
+      const apiAwayScore = awayScoreObj ? awayScoreObj.score.goals : 0;
+      s1 = swap ? apiAwayScore : apiHomeScore;
+      s2 = swap ? apiHomeScore : apiAwayScore;
+    } else {
+      const ftScores = scores.filter(s => s.description === 'FT');
+      if (ftScores.length > 0) {
+        const homeScoreObj = ftScores.find(s => s.participant_id === homeTeamObj.id);
+        const awayScoreObj = ftScores.find(s => s.participant_id !== homeTeamObj.id);
+        const apiHomeScore = homeScoreObj ? homeScoreObj.score.goals : 0;
+        const apiAwayScore = awayScoreObj ? awayScoreObj.score.goals : 0;
+        s1 = swap ? apiAwayScore : apiHomeScore;
+        s2 = swap ? apiHomeScore : apiAwayScore;
+      }
+    }
+    
+    if (s1 === null || s2 === null) continue;
+    
+    const stateId = fixture.state_id;
+    const isFinished = [5, 7, 8, 14, 15, 17].includes(stateId);
+    const isLive = [2, 3, 6, 9, 21, 22, 25].includes(stateId);
+    const status = isFinished ? 'finished' : (isLive ? 'live' : 'scheduled');
+    
     const winner = s1 > s2 ? homeEs : s2 > s1 ? awayEs : null;
-    const status = match.status === 'FINISHED' ? 'finished' : 'live';
-
+    
     const matchData = {
-      s1, s2, status, t1: homeEs, t2: awayEs, winner,
-      phase: 'grupos', g: `Grupo ${match.group?.replace('GROUP_', '')}`,
+      s1, s2, status, t1: swap ? awayEs : homeEs, t2: swap ? homeEs : awayEs, winner,
+      phase: 'grupos', g: `Grupo ${groupLetter}`,
     };
-
-    await firebasePatch('matches', matchId, matchData);
+    
+    // Add statistics
+    const statistics = fixture.statistics || [];
+    const updateMaskFields = [];
+    
+    for (const s of statistics) {
+      const typeId = s.type_id;
+      const loc = s.location;
+      const val = s.data?.value;
+      if (val === undefined || val === null) continue;
+      const isHome = loc === 'home';
+      const side = ((isHome && !swap) || (!isHome && swap)) ? 't1' : 't2';
+      
+      let key = null;
+      if (typeId === 45) key = `poss${side.slice(1)}`;
+      else if (typeId === 86) key = `shots${side.slice(1)}`;
+      else if (typeId === 80) key = `passes${side.slice(1)}`;
+      else if (typeId === 34) key = `corners${side.slice(1)}`;
+      else if (typeId === 56) key = `fouls${side.slice(1)}`;
+      else if (typeId === 51) key = `offsides${side.slice(1)}`;
+      
+      if (key) {
+        matchData[key] = parseInt(val);
+        updateMaskFields.push(`updateMask.fieldPaths=${key}`);
+      }
+    }
+    
+    // Base mask fields
+    const baseMask = ['s1', 's2', 'status', 't1', 't2', 'winner', 'phase', 'g'];
+    const maskParams = '&' + baseMask.map(f => `updateMask.fieldPaths=${f}`).concat(updateMaskFields).join('&');
+    
+    await firebasePatch('matches', matchId, matchData, maskParams);
     console.log(`  ✅ ${matchId}: ${homeEs} ${s1}-${s2} ${awayEs} (${status})`);
-
-    // Fetch detailed match data (goals)
+    
+    // Sync Events
     try {
-      const detail = await fdFetch(`/matches/${match.id}`);
-      if (detail.goals?.length) {
-        const existing = await getExistingEvents(matchId);
-        // Only add goals if none exist yet
-        if (existing.length === 0) {
-          for (const goal of detail.goals) {
-            const scorerTeam = spanishName(goal.team?.name || '');
-            const team = norm(scorerTeam) === norm(homeEs) ? 't1' : 't2';
-            const evt = {
-              matchId,
-              type: 'goal',
-              minute: goal.minute || 0,
-              player: goal.scorer?.name || '(desconocido)',
-              team,
-              goalType: goal.type === 'PENALTY' ? 'penalty' : goal.type === 'OWN' ? 'own' : 'play',
-            };
-            await firebasePost('events', evt);
-            console.log(`    ⚽ ${evt.minute}' ${evt.player}`);
-          }
+      const existing = await getExistingEvents(matchId);
+      // Delete existing events
+      for (const doc of existing) {
+        await deleteEvent(doc.name);
+      }
+      
+      const events = fixture.events || [];
+      events.sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));
+      
+      for (const e of events) {
+        const typeId = e.type_id;
+        const minute = e.minute || 0;
+        const player = e.player_name || 'Jugador';
+        const relPlayer = e.related_player_name || '';
+        const participantId = e.participant_id;
+        
+        const isHome = participantId === homeTeamObj.id;
+        const side = ((isHome && !swap) || (!isHome && swap)) ? 't1' : 't2';
+        
+        let evtType = null;
+        let goalType = null;
+        let playerOut = null;
+        
+        if ([14, 15, 16].includes(typeId)) {
+          evtType = 'goal';
+          if (typeId === 15) goalType = 'own';
+          else if (typeId === 16) goalType = 'penalty';
+          else goalType = 'play';
+        } else if (typeId === 19) {
+          evtType = 'yellow';
+        } else if ([20, 21].includes(typeId)) {
+          evtType = 'red';
+        } else if (typeId === 18) {
+          evtType = 'sub';
+          playerOut = relPlayer;
+        }
+        
+        if (evtType) {
+          const evt = {
+            matchId,
+            type: evtType,
+            minute,
+            player,
+            team: side,
+          };
+          if (goalType) evt.goalType = goalType;
+          if (playerOut) evt.playerOut = playerOut;
+          
+          await firebasePost('events', evt);
+          console.log(`    ⚽ ${evt.type} - ${evt.minute}' ${evt.player}`);
         }
       }
     } catch (e) {
-      console.log(`    ⚠️ Could not fetch goals: ${e.message}`);
+      console.log(`    ⚠️ Error syncing events: ${e.message}`);
     }
-
+    
     updated++;
-
-    // Rate limit: free tier = 10 req/min
-    await new Promise(r => setTimeout(r, 6500));
+    await new Promise(r => setTimeout(r, 2000));
   }
-
+  
   console.log(`\n✅ Done. Updated ${updated} matches.`);
-
-  function norm(s) { return (s || '').toLowerCase().replace(/[^a-záéíóúñü]/g, ''); }
 }
 
 syncMatches().catch(e => {

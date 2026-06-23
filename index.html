@@ -164,7 +164,7 @@ const firebaseConfig = {
   messagingSenderId: "897064640862",
   appId: "1:897064640862:web:6236c593c468af9c1b2fcf"
 };
-const FOOTBALL_API_KEY = "740bcff88e6b477284c84dd4ba4fafbb";
+const SPORTMONKS_API_KEY = "Gh7ARv5qQgeqC9HaSdeGiV7mWWqNqAvdcackmfPivzEQSRvUEorH0pkWzT9o";
 const ADMIN_HASH = "23d7676b6fec95ed768106f84de91b5a373952d533e7ff6acec17779fba51c8c";
 
 const fbApp = initializeApp(firebaseConfig);
@@ -525,7 +525,7 @@ function renderAdminPanel(m, t1Name, t2Name){
       </div>
       ${isKnock?`<div class="grid grid-cols-2 gap-3 mt-2"><div><label class="text-[10px] font-bold uppercase">T. Extra ${t1Name}</label><input type="number" id="adm-et1" class="fld" value="${d.et1??''}" min="0"></div><div><label class="text-[10px] font-bold uppercase">T. Extra ${t2Name}</label><input type="number" id="adm-et2" class="fld" value="${d.et2??''}" min="0"></div></div><div class="grid grid-cols-2 gap-3 mt-2"><div><label class="text-[10px] font-bold uppercase">Penales ${t1Name}</label><input type="number" id="adm-pens1" class="fld" value="${d.pens1??''}" min="0"></div><div><label class="text-[10px] font-bold uppercase">Penales ${t2Name}</label><input type="number" id="adm-pens2" class="fld" value="${d.pens2??''}" min="0"></div></div>`:''}
       <div class="mt-2"><label class="text-[10px] font-bold uppercase">Estado</label><select id="adm-status" class="fld"><option value="scheduled" ${d.status==='scheduled'||!d.status?'selected':''}>Programado</option><option value="live" ${d.status==='live'?'selected':''}>En vivo</option><option value="finished" ${d.status==='finished'?'selected':''}>Finalizado</option></select></div>
-      <div class="flex gap-2 mt-3"><button id="adm-save-score" class="btn-prim flex-1">Guardar marcador</button><button id="adm-import-api" class="btn-orange" title="Importar de football-data.org">📡 API</button></div>
+      <div class="flex gap-2 mt-3"><button id="adm-save-score" class="btn-prim flex-1">Guardar marcador</button><button id="adm-import-api" class="btn-orange" title="Importar de Sportmonks">📡 API</button></div>
     </div>
     <div class="mb-3"><div class="text-xs font-bold text-[var(--c-ink-soft)] mb-2">Estadísticas (opcional)</div>
       <div class="grid grid-cols-[1fr_auto_1fr] gap-x-2 gap-y-1 items-center">
@@ -552,6 +552,24 @@ function renderAdminPanel(m, t1Name, t2Name){
         <input id="adm-offsides2" type="number" placeholder="0" class="fld text-center" value="${d.offsides2??''}">
       </div>
       <button id="adm-save-stats" class="btn-sec w-full mt-2">Guardar estadísticas</button>
+    </div>
+    <div class="mb-3 bg-gray-50 rounded-2xl p-4">
+      <div class="text-xs font-bold text-[var(--c-ink-soft)] mb-2">Agregar evento (gol / tarjeta / cambio)</div>
+      <div class="grid grid-cols-2 gap-2 mb-2">
+        <div><label class="text-[10px] font-bold uppercase">Tipo</label>
+          <select id="adm-evt-type" class="fld"><option value="goal">⚽ Gol</option><option value="yellow">🟨 Amarilla</option><option value="red">🟥 Roja</option><option value="sub">🔁 Cambio</option></select></div>
+        <div><label class="text-[10px] font-bold uppercase">Equipo</label>
+          <select id="adm-evt-team" class="fld"><option value="t1">${t1Name}</option><option value="t2">${t2Name}</option></select></div>
+        <div><label class="text-[10px] font-bold uppercase">Minuto</label>
+          <input id="adm-evt-min" type="number" min="0" max="130" placeholder="Ej: 45" class="fld"></div>
+        <div><label class="text-[10px] font-bold uppercase">Jugador</label>
+          <input id="adm-evt-player" type="text" placeholder="Nombre" class="fld"></div>
+        <div id="adm-evt-goaltype-wrap"><label class="text-[10px] font-bold uppercase">Tipo de gol</label>
+          <select id="adm-evt-goaltype" class="fld"><option value="play">Jugada</option><option value="penalty">Penal</option><option value="freekick">Tiro libre</option><option value="header">De cabeza</option><option value="own">Autogol</option></select></div>
+        <div id="adm-evt-playerout-wrap" class="hidden"><label class="text-[10px] font-bold uppercase">Sale (cambio)</label>
+          <input id="adm-evt-playerout" type="text" placeholder="Jugador que sale" class="fld"></div>
+      </div>
+      <button id="adm-evt-add" class="btn-prim w-full">＋ Agregar evento</button>
     </div>
     <button id="adm-clear" class="text-xs text-red-600 font-bold hover:underline">🗑️ Borrar todos los datos de este partido</button>
   </div>`;
@@ -589,93 +607,201 @@ function wireAdminPanel(m, t1Name, t2Name){
     const evts = await getDocs(query(collection(db,'events'), where('matchId','==',m.id)));
     const batch = writeBatch(db); evts.forEach(d=>batch.delete(d.ref)); await batch.commit();
   };
+  const evtType = $('adm-evt-type');
+  if(evtType){
+    const toggleEvtFields = () => {
+      const t = evtType.value;
+      $('adm-evt-goaltype-wrap').classList.toggle('hidden', t!=='goal');
+      $('adm-evt-playerout-wrap').classList.toggle('hidden', t!=='sub');
+    };
+    evtType.onchange = toggleEvtFields; toggleEvtFields();
+    $('adm-evt-add').onclick = async () => {
+      const type = evtType.value;
+      const minute = parseInt($('adm-evt-min').value);
+      const player = $('adm-evt-player').value.trim();
+      if(isNaN(minute)){ alert('Ingresa el minuto'); return; }
+      if(!player){ alert('Ingresa el nombre del jugador'); return; }
+      const evt = { matchId:m.id, type, minute, player, team:$('adm-evt-team').value, createdAt: serverTimestamp() };
+      if(type==='goal') evt.goalType = $('adm-evt-goaltype').value;
+      if(type==='sub'){ const out = $('adm-evt-playerout').value.trim(); if(out) evt.playerOut = out; }
+      $('adm-evt-add').disabled = true;
+      try { await addDoc(collection(db,'events'), evt); $('adm-evt-min').value=''; $('adm-evt-player').value=''; if($('adm-evt-playerout')) $('adm-evt-playerout').value=''; }
+      catch(e){ alert('No se pudo agregar: '+e.message); }
+      $('adm-evt-add').disabled = false;
+    };
+  }
   $('adm-import-api').onclick = async () => {
     $('adm-import-api').disabled = true; $('adm-import-api').textContent = '⏳';
-    try { await importFromFootballAPI(m, t1Name, t2Name); $('adm-import-api').textContent='✅'; alert('✅ Datos importados desde API'); }
+    try {
+      const r = await importFromFootballAPI(m, t1Name, t2Name);
+      $('adm-import-api').textContent='✅';
+      let msg;
+      if(!r.scoreImported){
+        msg = '⚠️ La API encontró el partido pero aún no tiene marcador (no jugado / sin datos).';
+      } else if(r.goals===0 && r.cards===0 && r.subs===0){
+        msg = `✅ Marcador importado: ${r.s1}-${r.s2}.\n\n⚠️ El plan GRATUITO de la API solo entrega el marcador: NO trae goleadores, minutos ni tarjetas.\nIngrésalos a mano en este panel, igual que el primer partido.`;
+      } else {
+        msg = `✅ Importado desde API:\n• Marcador: ${r.s1}-${r.s2}\n• Goles: ${r.goals}\n• Tarjetas: ${r.cards}\n• Cambios: ${r.subs}`;
+        if(r.detailError) msg += `\n\n⚠️ Detalle parcial: ${r.detailError}`;
+      }
+      alert(msg);
+    }
     catch(err){ alert('No se pudo importar: '+err.message); $('adm-import-api').textContent='📡 API'; $('adm-import-api').disabled=false; }
   };
   document.querySelectorAll('[data-del-evt]').forEach(el=>el.onclick=async ()=>{ if(!confirm('¿Borrar este evento?')) return; await deleteDoc(doc(db,'events',el.dataset.delEvt)); });
 }
 
-const FD_BASE = 'https://api.football-data.org/v4';
+const SM_BASE = 'https://api.sportmonks.com/v3/football';
 const CF_WORKER = localStorage.getItem('cf_worker_url') || 'https://green-bird-a978-centauro-api-proxy.centauroadss.workers.dev';
 const CORS_PROXIES = [
   url => 'https://corsproxy.io/?' + encodeURIComponent(url),
   url => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
   url => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url),
 ];
-async function fdFetch(path){
-  const fullUrl = FD_BASE + path;
-  // 1. Try Cloudflare Worker proxy (most reliable)
-  if(CF_WORKER){
-    try {
-      const r = await fetch(CF_WORKER + '/v4' + path, { headers: {'X-Auth-Token': FOOTBALL_API_KEY} });
-      if(r.ok) return await r.json();
-    } catch(e){}
-  }
-  // 2. Try direct (works on localhost)
+async function smFetch(path){
+  const url = SM_BASE + path + (path.includes('?') ? '&' : '?') + 'api_token=' + SPORTMONKS_API_KEY;
   try {
-    const r = await fetch(fullUrl, { headers: {'X-Auth-Token': FOOTBALL_API_KEY} });
+    const r = await fetch(url);
     if(!r.ok) throw new Error('HTTP '+r.status);
     return await r.json();
   } catch(directErr) {
-    const urlWithToken = fullUrl + (fullUrl.includes('?')?'&':'?') + 'X-Auth-Token=' + FOOTBALL_API_KEY;
     const errors = ['Directo: '+directErr.message];
-    // 3. Try public CORS proxies as last resort
     for(const mkProxy of CORS_PROXIES){
       try {
-        const r = await fetch(mkProxy(urlWithToken));
+        const r = await fetch(mkProxy(url));
         if(!r.ok) throw new Error('HTTP '+r.status);
         const data = await r.json();
-        if(data.matches || data.competition || data.id) return data;
+        if(data.data) return data;
         throw new Error('Respuesta no válida');
       } catch(pe){ errors.push(pe.message); }
     }
-    throw new Error('API no accesible (CORS). football-data.org solo permite llamadas desde localhost en plan gratuito. Usa el panel admin manualmente o ejecuta la app en localhost. Detalles: ' + errors.join(' | '));
+    throw new Error('API no accesible (CORS). Detalles: ' + errors.join(' | '));
   }
 }
 
-const ES_TO_API = {'México':['Mexico'],'Sudáfrica':['South Africa'],'Corea del Sur':['Korea Republic','South Korea'],'Rep. Checa':['Czechia','Czech Republic'],'Canadá':['Canada'],'Bosnia':['Bosnia-Herzegovina','Bosnia and Herzegovina','Bosnia-H.'],'EE. UU.':['United States','USA'],'Catar':['Qatar'],'Brasil':['Brazil'],'Marruecos':['Morocco'],'Haití':['Haiti'],'Escocia':['Scotland'],'Turquía':['Turkey'],'Alemania':['Germany'],'Curazao':['Curaçao','Curacao'],'Países Bajos':['Netherlands'],'Japón':['Japan'],'Costa de Marfil':["Côte d'Ivoire",'Ivory Coast'],'Suecia':['Sweden'],'Túnez':['Tunisia'],'España':['Spain'],'Cabo Verde':['Cape Verde'],'Bélgica':['Belgium'],'Egipto':['Egypt'],'Arabia Saudita':['Saudi Arabia'],'Irán':['Iran'],'Nva. Zelanda':['New Zealand'],'Francia':['France'],'Iraq':['Iraq'],'Noruega':['Norway'],'Argelia':['Algeria'],'Jordania':['Jordan'],'RD Congo':['DR Congo','Congo DR'],'Inglaterra':['England'],'Croacia':['Croatia'],'Panamá':['Panama'],'Uzbekistán':['Uzbekistan'],'Austria':['Austria'],'Ghana':['Ghana'],'Senegal':['Senegal'],'Portugal':['Portugal'],'Argentina':['Argentina'],'Colombia':['Colombia'],'Uruguay':['Uruguay'],'Ecuador':['Ecuador'],'Australia':['Australia']};
+const ES_TO_API = {'México':['Mexico'],'Sudáfrica':['South Africa'],'Corea del Sur':['Korea Republic','South Korea'],'Rep. Checa':['Czechia','Czech Republic'],'Canadá':['Canada'],'Bosnia':['Bosnia-Herzegovina','Bosnia and Herzegovina','Bosnia-H.'],'EE. UU.':['United States','USA'],'Catar':['Qatar'],'Brasil':['Brazil'],'Marruecos':['Morocco'],'Haití':['Haiti'],'Escocia':['Scotland'],'Turquía':['Turkey'],'Alemania':['Germany'],'Curazao':['Curaçao','Curacao'],'Países Bajos':['Netherlands'],'Japón':['Japan'],'Costa de Marfil':["Côte d'Ivoire",'Ivory Coast'],'Suecia':['Sweden'],'Túnez':['Tunisia'],'España':['Spain'],'Cabo Verde':['Cape Verde'],'Bélgica':['Belgium'],'Egipto':['Egypt'],'Arabia Saudita':['Saudi Arabia'],'Irán':['Iran'],'Nva. Zelanda':['New Zealand'],'Francia':['France'],'Iraq':['Iraq'],'Noruega':['Norway'],'Argelia':['Algeria'],'Jordania':['Jordan'],'RD Congo':['DR Congo','Congo DR'],'Inglaterra':['England'],'Croacia':['Croacia','Croatia'],'Panamá':['Panama'],'Uzbekistán':['Uzbekistan'],'Austria':['Austria'],'Ghana':['Ghana'],'Senegal':['Senegal'],'Portugal':['Portugal'],'Argentina':['Argentina'],'Colombia':['Colombia'],'Uruguay':['Uruguay'],'Ecuador':['Ecuador'],'Australia':['Australia']};
 function apiTeamMatch(apiName, apiShort, esName){
   const variants = ES_TO_API[esName] || [esName];
   const hay = [apiName,apiShort].join('|').toLowerCase();
   return variants.some(v => hay.includes(v.toLowerCase()));
 }
 async function importFromFootballAPI(m, t1Name, t2Name){
-  const nextDay = new Date(new Date(m.date+'T00:00:00').getTime()+86400000).toISOString().slice(0,10);
-  const data = await fdFetch('/competitions/WC/matches?dateFrom='+m.date+'&dateTo='+nextDay);
-  if(!data.matches || data.matches.length===0) throw new Error('Sin partidos en esa fecha en API');
-  const found = data.matches.find(x => {
-    const hMatch = apiTeamMatch(x.homeTeam?.name||'', x.homeTeam?.shortName||'', t1Name) || apiTeamMatch(x.homeTeam?.name||'', x.homeTeam?.shortName||'', t2Name);
-    const aMatch = apiTeamMatch(x.awayTeam?.name||'', x.awayTeam?.shortName||'', t1Name) || apiTeamMatch(x.awayTeam?.name||'', x.awayTeam?.shortName||'', t2Name);
+  const res = await smFetch('/fixtures/date/' + m.date + '?include=participants;scores;events.player;statistics.type');
+  if(!res.data || res.data.length===0) throw new Error('Sin partidos en esa fecha en Sportmonks');
+  const found = res.data.find(x => {
+    const participants = x.participants || [];
+    const homeTeam = participants.find(p => p.meta?.location === 'home');
+    const awayTeam = participants.find(p => p.meta?.location === 'away');
+    if (!homeTeam || !awayTeam) return false;
+    const hMatch = apiTeamMatch(homeTeam.name||'', homeTeam.short_code||'', t1Name) || apiTeamMatch(homeTeam.name||'', homeTeam.short_code||'', t2Name);
+    const aMatch = apiTeamMatch(awayTeam.name||'', awayTeam.short_code||'', t1Name) || apiTeamMatch(awayTeam.name||'', awayTeam.short_code||'', t2Name);
     return hMatch && aMatch;
   });
-  if(!found) throw new Error('Partido no encontrado en fixture API');
-  const full = found.score?.fullTime;
-  const swap = apiTeamMatch(found.homeTeam?.name||'', found.homeTeam?.shortName||'', t2Name);
-  const update = { updatedAt: serverTimestamp(), t1:t1Name, t2:t2Name, phase:m.phase, g:m.g };
-  if(full && full.home!=null){
-    update.s1 = swap ? full.away : full.home;
-    update.s2 = swap ? full.home : full.away;
-    update.status = found.status==='FINISHED' ? 'finished' : (found.status==='IN_PLAY' ? 'live' : 'scheduled');
-    update.winner = update.s1>update.s2 ? t1Name : update.s2>update.s1 ? t2Name : null;
+  if(!found) throw new Error('Partido no encontrado en fixture Sportmonks');
+  const participants = found.participants || [];
+  const homeTeam = participants.find(p => p.meta?.location === 'home');
+  const swap = apiTeamMatch(homeTeam?.name||'', homeTeam?.short_code||'', t2Name);
+  
+  let s1 = null, s2 = null;
+  const scores = found.scores || [];
+  const currentScores = scores.filter(s => s.description === 'CURRENT');
+  if (currentScores.length > 0) {
+    const homeScoreObj = currentScores.find(s => s.participant_id === homeTeam?.id);
+    const awayScoreObj = currentScores.find(s => s.participant_id !== homeTeam?.id);
+    const apiHomeScore = homeScoreObj ? homeScoreObj.score.goals : 0;
+    const apiAwayScore = awayScoreObj ? awayScoreObj.score.goals : 0;
+    s1 = swap ? apiAwayScore : apiHomeScore;
+    s2 = swap ? apiHomeScore : apiAwayScore;
+  } else {
+    const ftScores = scores.filter(s => s.description === 'FT');
+    if (ftScores.length > 0) {
+      const homeScoreObj = ftScores.find(s => s.participant_id === homeTeam?.id);
+      const awayScoreObj = ftScores.find(s => s.participant_id !== homeTeam?.id);
+      const apiHomeScore = homeScoreObj ? homeScoreObj.score.goals : 0;
+      const apiAwayScore = awayScoreObj ? awayScoreObj.score.goals : 0;
+      s1 = swap ? apiAwayScore : apiHomeScore;
+      s2 = swap ? apiHomeScore : apiAwayScore;
+    }
   }
+
+  const stateId = found.state_id;
+  const isFinished = [5, 7, 8, 14, 15, 17].includes(stateId);
+  const isLive = [2, 3, 6, 9, 21, 22, 25].includes(stateId);
+  const status = isFinished ? 'finished' : (isLive ? 'live' : 'scheduled');
+
+  const update = { updatedAt: serverTimestamp(), t1:t1Name, t2:t2Name, phase:m.phase, g:m.g };
+  const result = { scoreImported:false, s1:null, s2:null, goals:0, cards:0, subs:0, detailError:null };
+  if(s1!==null && s2!==null){
+    update.s1 = s1;
+    update.s2 = s2;
+    update.status = status;
+    update.winner = s1>s2 ? t1Name : s2>s1 ? t2Name : null;
+    result.scoreImported = true; result.s1 = s1; result.s2 = s2;
+  }
+
+  const statistics = found.statistics || [];
+  for (const s of statistics) {
+    const typeId = s.type_id;
+    const loc = s.location;
+    const val = s.data?.value;
+    if (val === undefined || val === null) continue;
+    const isHome = loc === 'home';
+    const side = ((isHome && !swap) || (!isHome && swap)) ? 't1' : 't2';
+    
+    if (typeId === 45) update[`poss${side.slice(1)}`] = parseInt(val);
+    else if (typeId === 86) update[`shots${side.slice(1)}`] = parseInt(val);
+    else if (typeId === 80) update[`passes${side.slice(1)}`] = parseInt(val);
+    else if (typeId === 34) update[`corners${side.slice(1)}`] = parseInt(val);
+    else if (typeId === 56) update[`fouls${side.slice(1)}`] = parseInt(val);
+    else if (typeId === 51) update[`offsides${side.slice(1)}`] = parseInt(val);
+  }
+
   await setDoc(doc(db,'matches',m.id), update, {merge:true});
-  if(found.id){
-    try {
-      const detail = await fdFetch('/matches/'+found.id);
-      if(detail.goals && detail.goals.length){
-        const existing = await getDocs(query(collection(db,'events'), where('matchId','==',m.id)));
-        const batch = writeBatch(db); existing.forEach(d=>batch.delete(d.ref)); await batch.commit();
-        for(const g of detail.goals){
-          const isHomeGoal = g.team?.id === found.homeTeam?.id;
-          const scorerTeam = (isHomeGoal && !swap) || (!isHomeGoal && swap) ? 't1' : 't2';
-          await addDoc(collection(db,'events'), { matchId: m.id, type:'goal', minute: g.minute||0, player: g.scorer?.name||'(desconocido)', team: scorerTeam, goalType: g.type==='PENALTY'?'penalty':g.type==='OWN'?'own':'play', createdAt: serverTimestamp() });
-        }
-      }
-    } catch(e){ console.warn('No se pudieron traer goles detallados', e); }
+
+  const existing = await getDocs(query(collection(db,'events'), where('matchId','==',m.id)));
+  const batch = writeBatch(db); existing.forEach(d=>batch.delete(d.ref)); await batch.commit();
+
+  const events = found.events || [];
+  events.sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));
+  for(const e of events){
+    const typeId = e.type_id;
+    const minute = e.minute || 0;
+    const player = e.player_name || 'Jugador';
+    const relPlayer = e.related_player_name || '';
+    const participantId = e.participant_id;
+    const isHome = participantId === homeTeam?.id;
+    const side = ((isHome && !swap) || (!isHome && swap)) ? 't1' : 't2';
+    
+    let evtType = null;
+    let goalType = null;
+    let playerOut = null;
+    
+    if ([14, 15, 16].includes(typeId)) {
+      evtType = 'goal';
+      if (typeId === 15) goalType = 'own';
+      else if (typeId === 16) goalType = 'penalty';
+      else goalType = 'play';
+    } else if (typeId === 19) {
+      evtType = 'yellow';
+    } else if ([20, 21].includes(typeId)) {
+      evtType = 'red';
+    } else if (typeId === 18) {
+      evtType = 'sub';
+      playerOut = relPlayer;
+    }
+    
+    if(evtType){
+      const evtData = { matchId:m.id, type:evtType, minute:minute, player:player, team:side, createdAt: serverTimestamp() };
+      if(goalType) evtData.goalType = goalType;
+      if(playerOut) evtData.playerOut = playerOut;
+      await addDoc(collection(db,'events'), evtData);
+      if(evtType==='goal') result.goals++;
+      else if(evtType==='yellow'||evtType==='red') result.cards++;
+      else if(evtType==='sub') result.subs++;
+    }
   }
   await recalcStandingsForGroup(m);
+  return result;
 }
 
 async function recalcStandingsForGroup(m){
