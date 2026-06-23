@@ -686,7 +686,8 @@ function apiTeamMatch(apiName, apiShort, esName){
   return variants.some(v => hay.includes(v.toLowerCase()));
 }
 async function importFromFootballAPI(m, t1Name, t2Name){
-  const res = await smFetch('/fixtures/date/' + m.date + '?include=participants;scores;events.player;statistics.type');
+  const nextDay = new Date(new Date(m.date+'T00:00:00').getTime()+86400000).toISOString().slice(0,10);
+  const res = await smFetch('/fixtures/between/' + m.date + '/' + nextDay + '?include=participants;scores;events.player;statistics.type');
   if(!res.data || res.data.length===0) throw new Error('Sin partidos en esa fecha en Sportmonks');
   const found = res.data.find(x => {
     const participants = x.participants || [];
