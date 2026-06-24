@@ -155,6 +155,7 @@ input[type=number]{-moz-appearance:textfield;}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
 import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection, addDoc, getDocs, query, where, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC9Qyj5btr56YRLlwf4afzAl9371N8Xgi0",
@@ -169,6 +170,8 @@ const ADMIN_HASH = "23d7676b6fec95ed768106f84de91b5a373952d533e7ff6acec17779fba5
 
 const fbApp = initializeApp(firebaseConfig);
 const db = getFirestore(fbApp);
+const auth = getAuth(fbApp);
+
 
 const TEAMS = {
   "México":{c1:"#006847",c2:"#ce1126",code:"MEX"},"EE. UU.":{c1:"#0a3161",c2:"#b31942",code:"USA"},
@@ -835,22 +838,47 @@ function renderStandings(){
 const adminBtn = document.getElementById('admin-btn');
 const loginModal = document.getElementById('login-modal');
 function updateAdminBadge(){ adminBtn.textContent = isAdmin ? '🔓 Admin · Salir' : '🔒 Admin'; adminBtn.classList.toggle('on', isAdmin); }
-adminBtn.onclick = ()=>{
-  if(isAdmin){ if(confirm('¿Salir del modo admin?')){ isAdmin=false; sessionStorage.removeItem('centauro-admin'); updateAdminBadge(); if(currentMatchId) renderMatchModal(); } }
+adminBtn.onclick = async ()=>{
+  if(isAdmin){
+    if(confirm('¿Salir del modo admin?')){
+      try {
+        await signOut(auth);
+      } catch (e) {
+        console.error("Logout failed:", e);
+      }
+    }
+  }
   else { loginModal.classList.remove('hidden'); loginModal.classList.add('flex'); setTimeout(()=>document.getElementById('login-pwd').focus(), 50); }
 };
 document.getElementById('login-cancel').onclick = ()=>{ loginModal.classList.add('hidden'); loginModal.classList.remove('flex'); document.getElementById('login-err').classList.add('hidden'); document.getElementById('login-pwd').value=''; };
 document.getElementById('login-submit').onclick = async ()=>{
   const pwd = document.getElementById('login-pwd').value;
-  const h = await sha256(pwd);
-  if(h===ADMIN_HASH){
-    isAdmin = true; sessionStorage.setItem('centauro-admin','1');
+  const email = 'admin@centauroads.com';
+  try {
+    document.getElementById('login-submit').disabled = true;
+    await signInWithEmailAndPassword(auth, email, pwd);
     loginModal.classList.add('hidden'); loginModal.classList.remove('flex');
-    document.getElementById('login-pwd').value=''; updateAdminBadge();
-    if(currentMatchId) renderMatchModal();
-  } else { document.getElementById('login-err').classList.remove('hidden'); }
+    document.getElementById('login-pwd').value='';
+  } catch (error) {
+    console.error("Login failed:", error.message);
+    document.getElementById('login-err').classList.remove('hidden');
+  } finally {
+    document.getElementById('login-submit').disabled = false;
+  }
 };
 document.getElementById('login-pwd').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('login-submit').click(); });
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    isAdmin = true;
+    sessionStorage.setItem('centauro-admin', '1');
+  } else {
+    isAdmin = false;
+    sessionStorage.removeItem('centauro-admin');
+  }
+  updateAdminBadge();
+  if(currentMatchId) renderMatchModal();
+});
 
 function renderAll(){ renderMonth('cal-jun',2026,6,30,0); renderMonth('cal-jul',2026,7,31,2); renderCards(); renderStandings(); if(currentMatchId) renderMatchModal(); }
 

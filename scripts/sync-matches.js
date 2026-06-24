@@ -1,10 +1,36 @@
 // sync-matches.js — GitHub Action that syncs Sportmonks v3 → Firebase
 // Runs server-side: no CORS issues, full API access
 
-const SPORTMONKS_TOKEN = process.env.SPORTMONKS_TOKEN || 'Gh7ARv5qQgeqC9HaSdeGiV7mWWqNqAvdcackmfPivzEQSRvUEorH0pkWzT9o';
-const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY;
-const FIREBASE_PROJECT = 'centauro-mundial-2026';
-const FIRESTORE_BASE = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
+const admin = require('firebase-admin');
+
+const SPORTMONKS_TOKEN = process.env.SPORTMONKS_TOKEN || process.env.FOOTBALL_API_KEY || 'Gh7ARv5qQgeqC9HaSdeGiV7mWWqNqAvdcackmfPivzEQSRvUEorH0pkWzT9o';
+const FIREBASE_PROJECT = process.env.FIREBASE_PROJECT_ID || 'centauro-mundial-2026';
+
+if (!admin.apps.length) {
+  let serviceAccount = null;
+  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+    try {
+      const decoded = Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT, 'base64').toString('utf8');
+      serviceAccount = JSON.parse(decoded);
+    } catch (e) {
+      console.error('[Firebase Admin] Error decoding service account:', e.message);
+    }
+  }
+  
+  if (serviceAccount) {
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount)
+    });
+    console.log('[Firebase Admin] Inicializado con Service Account decodificada.');
+  } else {
+    admin.initializeApp({
+      projectId: FIREBASE_PROJECT
+    });
+    console.log('[Firebase Admin] Inicializado por defecto (Project ID).');
+  }
+}
+
+const db = admin.firestore();
 
 const TEAM_MAP = {
   'Mexico': 'México', 'South Africa': 'Sudáfrica', 'Korea Republic': 'Corea del Sur',
@@ -50,57 +76,45 @@ async function smFetch(path) {
   return res.json();
 }
 
-async function firebasePatch(collection, docId, fields, updateMaskParams = '') {
-  const url = `${FIRESTORE_BASE}/${collection}/${docId}?key=${FIREBASE_API_KEY}${updateMaskParams}`;
-  const body = { fields: {} };
+async function firebasePatch(collection, docId, fields) {
+  const cleanFields = {};
   for (const [k, v] of Object.entries(fields)) {
-    if (v === null || v === undefined) continue;
-    if (typeof v === 'number') body.fields[k] = { integerValue: String(v) };
-    else if (typeof v === 'string') body.fields[k] = { stringValue: v };
+    if (v !== null && v !== undefined) {
+      cleanFields[k] = v;
+    }
   }
-  const res = await fetch(url, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) throw new Error(`Firebase PATCH ${docId}: ${res.status}`);
-  return res.json();
+  await db.collection(collection).doc(docId).set(cleanFields, { merge: true });
 }
 
 async function firebasePost(collection, fields) {
-  const url = `${FIRESTORE_BASE}/${collection}?key=${FIREBASE_API_KEY}`;
-  const body = { fields: {} };
+  const cleanFields = {};
   for (const [k, v] of Object.entries(fields)) {
-    if (v === null || v === undefined) continue;
-    if (typeof v === 'number') body.fields[k] = { integerValue: String(v) };
-    else if (typeof v === 'string') body.fields[k] = { stringValue: v };
+    if (v !== null && v !== undefined) {
+      cleanFields[k] = v;
+    }
   }
-  // Add createdAt
-  body.fields.createdAt = { stringValue: new Date().toISOString() };
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) throw new Error(`Firebase POST ${collection}: ${res.status}`);
-  return res.json();
+  cleanFields.createdAt = new Date().toISOString();
+  await db.collection(collection).add(cleanFields);
 }
 
 async function getExistingEvents(matchId) {
-  const url = `${FIRESTORE_BASE}/events?key=${FIREBASE_API_KEY}&pageSize=100`;
-  const res = await fetch(url);
-  if (!res.ok) return [];
-  const data = await res.json();
-  if (!data.documents) return [];
-  return data.documents.filter(d =>
-    d.fields?.matchId?.stringValue === matchId
-  );
+  try {
+    const snap = await db.collection('events').where('matchId', '==', matchId).get();
+    const docs = [];
+    snap.forEach(doc => {
+      docs.push(doc.ref);
+    });
+    return docs;
+  } catch (e) {
+    console.error(`  ⚠️ Error getting existing events for ${matchId}:`, e.message);
+    return [];
+  }
 }
 
-async function deleteEvent(docName) {
-  const url = `https://firestore.googleapis.com/v1/${docName}?key=${FIREBASE_API_KEY}`;
-  await fetch(url, { method: 'DELETE' });
+async function deleteEvent(docRef) {
+  await docRef.delete();
 }
+
 
 function norm(s) {
   return (s || '').toLowerCase().replace(/[^a-záéíóúñü]/g, '');
@@ -153,12 +167,11 @@ async function syncMatches() {
     for (const [group, candidates] of Object.entries(GROUP_MATCH_IDS)) {
       for (const cid of candidates) {
         try {
-          const mUrl = `${FIRESTORE_BASE}/matches/${cid}?key=${FIREBASE_API_KEY}`;
-          const mRes = await fetch(mUrl);
-          if (mRes.ok) {
-            const doc = await mRes.json();
-            const t1 = doc.fields?.t1?.stringValue || '';
-            const t2 = doc.fields?.t2?.stringValue || '';
+          const docSnap = await db.collection('matches').doc(cid).get();
+          if (docSnap.exists) {
+            const data = docSnap.data();
+            const t1 = data.t1 || '';
+            const t2 = data.t2 || '';
             
             if (norm(t1) === norm(homeEs) && norm(t2) === norm(awayEs)) {
               matchId = cid;
@@ -250,15 +263,15 @@ async function syncMatches() {
     const baseMask = ['s1', 's2', 'status', 't1', 't2', 'winner', 'phase', 'g'];
     const maskParams = '&' + baseMask.map(f => `updateMask.fieldPaths=${f}`).concat(updateMaskFields).join('&');
     
-    await firebasePatch('matches', matchId, matchData, maskParams);
+    await firebasePatch('matches', matchId, matchData);
     console.log(`  ✅ ${matchId}: ${homeEs} ${s1}-${s2} ${awayEs} (${status})`);
     
     // Sync Events
     try {
       const existing = await getExistingEvents(matchId);
       // Delete existing events
-      for (const doc of existing) {
-        await deleteEvent(doc.name);
+      for (const docRef of existing) {
+        await deleteEvent(docRef);
       }
       
       const events = fixture.events || [];
