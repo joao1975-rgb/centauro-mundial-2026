@@ -131,8 +131,9 @@ input[type=number]{-moz-appearance:textfield;}
   <div class="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl">
     <div class="brand-grad px-6 py-4 text-white"><div class="font-black text-lg">Acceso admin</div><div class="text-xs opacity-80">Solo personal autorizado</div></div>
     <div class="p-6">
+      <input id="login-email" type="email" placeholder="Correo electrónico" class="fld mb-3" autocomplete="on" value="centauroadss@gmail.com">
       <input id="login-pwd" type="password" placeholder="Contraseña" class="fld mb-3" autocomplete="off">
-      <div id="login-err" class="text-xs text-red-600 font-bold mb-3 hidden">Contraseña incorrecta</div>
+      <div id="login-err" class="text-xs text-red-600 font-bold mb-3 hidden">Correo o contraseña incorrectos</div>
       <div class="flex gap-2"><button id="login-cancel" class="btn-sec flex-1">Cancelar</button><button id="login-submit" class="btn-prim flex-1">Entrar</button></div>
     </div>
   </div>
@@ -848,12 +849,17 @@ adminBtn.onclick = async ()=>{
       }
     }
   }
-  else { loginModal.classList.remove('hidden'); loginModal.classList.add('flex'); setTimeout(()=>document.getElementById('login-pwd').focus(), 50); }
+  else { loginModal.classList.remove('hidden'); loginModal.classList.add('flex'); setTimeout(()=>document.getElementById('login-email').focus(), 50); }
 };
 document.getElementById('login-cancel').onclick = ()=>{ loginModal.classList.add('hidden'); loginModal.classList.remove('flex'); document.getElementById('login-err').classList.add('hidden'); document.getElementById('login-pwd').value=''; };
 document.getElementById('login-submit').onclick = async ()=>{
+  const email = document.getElementById('login-email').value.trim();
   const pwd = document.getElementById('login-pwd').value;
-  const email = 'admin@centauroads.com';
+  if (!email || !pwd) {
+    document.getElementById('login-err').textContent = 'Ingrese correo y contraseña';
+    document.getElementById('login-err').classList.remove('hidden');
+    return;
+  }
   try {
     document.getElementById('login-submit').disabled = true;
     await signInWithEmailAndPassword(auth, email, pwd);
@@ -861,11 +867,13 @@ document.getElementById('login-submit').onclick = async ()=>{
     document.getElementById('login-pwd').value='';
   } catch (error) {
     console.error("Login failed:", error.message);
+    document.getElementById('login-err').textContent = 'Correo o contraseña incorrectos';
     document.getElementById('login-err').classList.remove('hidden');
   } finally {
     document.getElementById('login-submit').disabled = false;
   }
 };
+document.getElementById('login-email').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('login-pwd').focus(); });
 document.getElementById('login-pwd').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('login-submit').click(); });
 
 onAuthStateChanged(auth, (user) => {
