@@ -2,11 +2,12 @@
 // Runs server-side: no CORS issues, full API access
 
 const admin = require('firebase-admin');
+const { getFirestore } = require('firebase-admin/firestore');
 
 const SPORTMONKS_TOKEN = process.env.SPORTMONKS_TOKEN || process.env.FOOTBALL_API_KEY || 'Gh7ARv5qQgeqC9HaSdeGiV7mWWqNqAvdcackmfPivzEQSRvUEorH0pkWzT9o';
 const FIREBASE_PROJECT = process.env.FIREBASE_PROJECT_ID || 'centauro-mundial-2026';
 
-if (!admin.apps.length) {
+if (!admin.getApps().length) {
   let serviceAccount = null;
   if (process.env.FIREBASE_SERVICE_ACCOUNT) {
     try {
@@ -19,7 +20,7 @@ if (!admin.apps.length) {
   
   if (serviceAccount) {
     admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount)
+      credential: admin.cert(serviceAccount)
     });
     console.log('[Firebase Admin] Inicializado con Service Account decodificada.');
   } else {
@@ -30,7 +31,7 @@ if (!admin.apps.length) {
   }
 }
 
-const db = admin.firestore();
+const db = getFirestore();
 
 const TEAM_MAP = {
   'Mexico': 'México', 'South Africa': 'Sudáfrica', 'Korea Republic': 'Corea del Sur',
