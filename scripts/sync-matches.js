@@ -1,13 +1,13 @@
 // sync-matches.js — GitHub Action that syncs Sportmonks v3 → Firebase
 // Runs server-side: no CORS issues, full API access
 
-const admin = require('firebase-admin');
+const { getApps, initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
 
 const SPORTMONKS_TOKEN = process.env.SPORTMONKS_TOKEN || process.env.FOOTBALL_API_KEY || 'Gh7ARv5qQgeqC9HaSdeGiV7mWWqNqAvdcackmfPivzEQSRvUEorH0pkWzT9o';
 const FIREBASE_PROJECT = process.env.FIREBASE_PROJECT_ID || 'centauro-mundial-2026';
 
-if (!admin.getApps().length) {
+if (!getApps().length) {
   let serviceAccount = null;
   if (process.env.FIREBASE_SERVICE_ACCOUNT) {
     try {
@@ -19,12 +19,12 @@ if (!admin.getApps().length) {
   }
   
   if (serviceAccount) {
-    admin.initializeApp({
-      credential: admin.cert(serviceAccount)
+    initializeApp({
+      credential: cert(serviceAccount)
     });
     console.log('[Firebase Admin] Inicializado con Service Account decodificada.');
   } else {
-    admin.initializeApp({
+    initializeApp({
       projectId: FIREBASE_PROJECT
     });
     console.log('[Firebase Admin] Inicializado por defecto (Project ID).');
