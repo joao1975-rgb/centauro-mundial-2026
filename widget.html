@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    (function() {
+      var isControl = window.location.search.indexOf('control=1') !== -1 || window.location.search.indexOf('control=true') !== -1;
+      document.documentElement.className += ' ' + (isControl ? 'dashboard-mode' : 'screen-mode');
+    })();
+  </script>
+  <title>DOOH Widget - Centauro ADS</title>
+  <!-- Google Fonts for premium typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons for premium dashboard dashboard -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css?v=20260624_03">
+</head>
+<body>
+  <script>
+    (function() {
+      var isControl = window.location.search.indexOf('control=1') !== -1 || window.location.search.indexOf('control=true') !== -1;
+      if (isControl) {
+        document.body.className = 'dashboard-mode';
+      } else {
+        document.body.className = 'screen-mode';
+      }
+    })();
+  </script>
+  <div class="widget-container" id="widget">
+    
+    <!-- ==========================================
+         SLIDE 1: SCOREBOARD (Frame Principal)
+         ========================================== -->
+    <div class="slide active" id="slide-scoreboard">
+      <!-- Sidebars for flyer mode -->
+      <div class="sidebar-vertical left-sidebar" id="sidebar-left">
+        <span>H</span>
+        <span>O</span>
+        <span>Y</span>
+      </div>
+      <div class="sidebar-vertical right-sidebar" id="sidebar-right">--:--</div>
+
+      <!-- Header: Brand & Status -->
+      <header class="widget-header">
+        <div class="brand-logo"><img src="centauro_logo.jpeg" class="centauro-logo-img" alt="Centauro Ads"></div>
+        <div class="status-badge" id="status-badge-s1">
+          <span class="status-dot"></span>
+          <span class="status-text" id="status-text-s1">CARGANDO...</span>
+        </div>
+      </header>
+
+      <!-- Main Board: Teams, Flags and Score -->
+      <main class="match-board">
+        <!-- Home Team -->
+        <div class="team home-team">
+          <div class="flip-container">
+            <div class="flipper" id="home-flipper">
+              <!-- Front: Flag -->
+              <div class="front">
+                <img src="" alt="" id="home-flag" class="team-flag">
+              </div>
+              <!-- Back: Star Player -->
+              <div class="back">
+                <img src="" alt="Estrella" id="home-star-img" class="star-player-img">
+                <div class="star-name-badge" id="home-star-name">Estrella</div>
+              </div>
+            </div>
+          </div>
+          <h2 class="team-name" id="home-name">LOCAL</h2>
+        </div>
+
+        <!-- Center Info: Score or Kickoff Time -->
+        <div class="match-center">
+          <!-- Live Clock -->
+          <div class="match-clock" id="match-clock">--:--</div>
+          
+          <!-- Score Display -->
+          <div class="score-display" id="score-display">
+            <span class="score-number" id="home-score">0</span>
+            <span class="score-divider">:</span>
+            <span class="score-number" id="away-score">0</span>
+          </div>
+
+          <!-- Pre-Match Announcement Info (Flyer) -->
+          <div class="upcoming-info" id="upcoming-info">
+            <div class="kickoff-group" id="kickoff-group">Fase de Grupos</div>
+            <div class="kickoff-stadium" id="kickoff-stadium">Estadio por definir</div>
+            <div class="kickoff-city" id="kickoff-city">Ciudad</div>
+          </div>
+        </div>
+
+        <!-- Away Team -->
+        <div class="team away-team">
+          <div class="flip-container">
+            <div class="flipper" id="away-flipper">
+              <!-- Front: Flag -->
+              <div class="front">
+                <img src="" alt="" id="away-flag" class="team-flag">
+              </div>
+              <!-- Back: Star Player -->
+              <div class="back">
+                <img src="" alt="Estrella" id="away-star-img" class="star-player-img">
+                <div class="star-name-badge" id="away-star-name">Estrella</div>
+              </div>
+            </div>
+          </div>
+          <h2 class="team-name" id="away-name">VISITANTE</h2>
+        </div>
+      </main>
+    </div>
+
+    <!-- ==========================================
+         SLIDE 2: EVENTS (Frame Sucesos Categorizados)
+         ========================================== -->
+    <div class="slide" id="slide-events">
+      <!-- Header: Brand & Status -->
+      <header class="widget-header">
+        <div class="brand-logo"><img src="centauro_logo.jpeg" class="centauro-logo-img" alt="Centauro Ads"></div>
+        <div class="status-badge" id="status-badge-s2">
+          <span class="status-dot"></span>
+          <span class="status-text" id="status-text-s2">CARGANDO...</span>
+        </div>
+      </header>
+
+      <!-- Match Summary Row (Mini Scoreboard for context) -->
+      <div class="mini-scoreboard">
+        <span class="mini-team" id="mini-home">LOC</span>
+        <span class="mini-score" id="mini-score-val">0 - 0</span>
+        <span class="mini-team" id="mini-away">VIS</span>
+        <span class="mini-clock" id="mini-clock-val">--'</span>
+      </div>
+
+      <!-- Main Events Container split by categories -->
+      <main class="events-container">
+        <!-- Category: GOLES -->
+        <section class="event-section" id="section-goles">
+          <h3 class="section-title">GOLES</h3>
+          <div class="section-list" id="list-goles">
+            <div class="no-section-events">Sin goles registrados</div>
+          </div>
+        </section>
+
+        <!-- Category: TARJETAS -->
+        <section class="event-section" id="section-tarjetas">
+          <h3 class="section-title">TARJETAS</h3>
+          <div class="section-list" id="list-tarjetas">
+            <div class="no-section-events">Sin tarjetas registradas</div>
+          </div>
+        </section>
+
+        <!-- Category: CAMBIOS -->
+        <section class="event-section" id="section-cambios">
+          <h3 class="section-title">CAMBIOS</h3>
+          <div class="section-list" id="list-cambios">
+            <div class="no-section-events">Sin cambios registrados</div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ==========================================
+         SLIDE 3: CALL TO ACTION (Llamado a la Acción)
+         ========================================== -->
+    <div class="slide" id="slide-cta">
+      <!-- Header: Brand & Status -->
+      <header class="widget-header">
+        <div class="brand-logo"><img src="centauro_logo.jpeg" class="centauro-logo-img" alt="Centauro Ads"></div>
+        <div class="status-badge" id="status-badge-s3">
+          <span class="status-dot"></span>
+          <span class="status-text" id="status-text-s3">CARGANDO...</span>
+        </div>
+      </header>
+
+      <!-- Match Summary Row (Mini Scoreboard for context) -->
+      <div class="mini-scoreboard">
+        <span class="mini-team" id="mini-home-s3">LOC</span>
+        <span class="mini-score" id="mini-score-val-s3">0 - 0</span>
+        <span class="mini-team" id="mini-away-s3">VIS</span>
+        <span class="mini-clock" id="mini-clock-val-s3">--'</span>
+      </div>
+
+      <!-- CTA Content -->
+      <main class="cta-container">
+        <h2 class="cta-title">¿QUIÉN GANARÁ EL PARTIDO?</h2>
+        <p class="cta-subtitle">Escanea el código QR y vota en vivo</p>
+        
+        <div class="cta-body">
+          <!-- Interactive Poll Results -->
+          <div class="poll-results">
+            <div class="poll-team-row" id="poll-row-home">
+              <span class="poll-team-name" id="poll-name-home">Local</span>
+              <div class="poll-bar-wrapper">
+                <div class="poll-bar home" id="poll-bar-home-val" style="width: 50%;"></div>
+              </div>
+              <span class="poll-percentage" id="poll-pct-home">50%</span>
+            </div>
+            
+            <div class="poll-team-row" id="poll-row-away">
+              <span class="poll-team-name" id="poll-name-away">Visitante</span>
+              <div class="poll-bar-wrapper">
+                <div class="poll-bar away" id="poll-bar-away-val" style="width: 50%;"></div>
+              </div>
+              <span class="poll-percentage" id="poll-pct-away">50%</span>
+            </div>
+          </div>
+
+          <!-- QR Code Column -->
+          <div class="qr-section">
+            <div class="qr-code-wrapper">
+              <!-- QR REAL hacia el Instagram de @centauroads (generado, vectorial) -->
+              <svg class="qr-code-svg" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31 31" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h31v31H0z"/><path stroke="#1a0b33" d="M1 1.5h7m1 0h1m1 0h2m1 0h1m3 0h2m3 0h7M1 2.5h1m5 0h1m1 0h1m3 0h1m1 0h1m2 0h4m1 0h1m5 0h1M1 3.5h1m1 0h3m1 0h1m1 0h1m2 0h5m4 0h1m1 0h1m1 0h3m1 0h1M1 4.5h1m1 0h3m1 0h1m2 0h3m2 0h1m1 0h2m1 0h2m1 0h1m1 0h3m1 0h1M1 5.5h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h3m1 0h1m1 0h3m1 0h1m1 0h3m1 0h1M1 6.5h1m5 0h1m2 0h6m5 0h1m1 0h1m5 0h1M1 7.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M10 8.5h1m1 0h1m2 0h1m4 0h1M1 9.5h1m2 0h6m2 0h1m1 0h5m3 0h1m2 0h1m1 0h3M1 10.5h1m1 0h1m2 0h1m3 0h1m1 0h1m2 0h2m1 0h3m3 0h2m1 0h2M2 11.5h1m1 0h1m1 0h2m1 0h2m1 0h1m2 0h4m3 0h3m2 0h1M2 12.5h1m1 0h1m1 0h1m1 0h1m2 0h1m1 0h2m1 0h1m3 0h2m2 0h1m2 0h1M2 13.5h1m1 0h2m1 0h1m1 0h2m1 0h4m1 0h1m1 0h3m1 0h2m4 0h1M3 14.5h1m1 0h1m3 0h2m5 0h4m3 0h1m1 0h5M1 15.5h2m4 0h3m1 0h1m1 0h1m1 0h4m1 0h1m3 0h1m2 0h1m1 0h1M4 16.5h3m2 0h1m1 0h7m2 0h2m2 0h2m1 0h1m1 0h1M1 17.5h1m2 0h1m1 0h3m1 0h2m1 0h1m2 0h2m8 0h1M1 18.5h2m2 0h2m2 0h2m1 0h1m3 0h1m1 0h5m2 0h1m1 0h2M1 19.5h5m1 0h1m5 0h4m2 0h2m1 0h2m2 0h1m2 0h1M1 20.5h2m1 0h3m3 0h2m2 0h1m2 0h1m4 0h6M1 21.5h2m1 0h1m2 0h1m1 0h1m4 0h1m1 0h1m1 0h1m1 0h9M9 22.5h6m1 0h1m2 0h1m1 0h1m3 0h2M1 23.5h7m1 0h2m1 0h1m1 0h1m1 0h3m1 0h2m1 0h1m1 0h2M1 24.5h1m5 0h1m1 0h4m1 0h1m2 0h2m1 0h2m3 0h1m2 0h2M1 25.5h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h2m1 0h2m2 0h7m2 0h1M1 26.5h1m1 0h3m1 0h1m1 0h3m1 0h1m1 0h5m1 0h2m1 0h1m4 0h1M1 27.5h1m1 0h3m1 0h1m3 0h3m1 0h4m1 0h1m3 0h2m1 0h3M1 28.5h1m5 0h1m3 0h3m5 0h1m2 0h3m1 0h2m1 0h1M1 29.5h7m1 0h1m1 0h1m2 0h4m2 0h3m2 0h2"/></svg>
+              <svg class="qr-code-svg-old" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="display:none">
+                <rect width="100" height="100" fill="white"/>
+                <!-- QR Code Markers -->
+                <rect x="5" y="5" width="25" height="25" fill="#85439a"/>
+                <rect x="10" y="10" width="15" height="15" fill="white"/>
+                <rect x="12" y="12" width="11" height="11" fill="#85439a"/>
+
+                <rect x="70" y="5" width="25" height="25" fill="#85439a"/>
+                <rect x="75" y="10" width="15" height="15" fill="white"/>
+                <rect x="77" y="12" width="11" height="11" fill="#85439a"/>
+
+                <rect x="5" y="70" width="25" height="25" fill="#85439a"/>
+                <rect x="10" y="75" width="15" height="15" fill="white"/>
+                <rect x="12" y="77" width="11" height="11" fill="#85439a"/>
+                
+                <!-- Mock QR inner elements -->
+                <rect x="35" y="5" width="5" height="15" fill="#f79131"/>
+                <rect x="45" y="15" width="10" height="5" fill="#85439a"/>
+                <rect x="55" y="5" width="5" height="20" fill="#f79131"/>
+                
+                <rect x="35" y="35" width="15" height="5" fill="#85439a"/>
+                <rect x="35" y="45" width="5" height="10" fill="#f79131"/>
+                <rect x="45" y="50" width="15" height="5" fill="#85439a"/>
+                <rect x="55" y="40" width="5" height="15" fill="#f79131"/>
+                <rect x="65" y="35" width="15" height="5" fill="#85439a"/>
+                
+                <rect x="70" y="45" width="20" height="5" fill="#f79131"/>
+                <rect x="75" y="55" width="10" height="10" fill="#85439a"/>
+                <rect x="85" y="70" width="10" height="10" fill="#f79131"/>
+                <rect x="70" y="80" width="5" height="15" fill="#85439a"/>
+                
+                <rect x="5" y="40" width="10" height="5" fill="#f79131"/>
+                <rect x="20" y="35" width="5" height="15" fill="#85439a"/>
+                <rect x="15" y="55" width="15" height="5" fill="#f79131"/>
+                
+                <!-- Center Centauro Icon dot -->
+                <circle cx="50" cy="50" r="10" fill="#85439a" />
+                <circle cx="50" cy="50" r="6" fill="#f79131" />
+              </svg>
+            </div>
+            <div class="qr-label">SÍGUENOS · @centauroads</div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Slide Indicators / Progress Dots at the bottom of the widget -->
+    <div class="slide-indicators" id="slide-indicators">
+      <div class="indicator active" id="dot-s1"></div>
+      <div class="indicator" id="dot-s2"></div>
+      <div class="indicator" id="dot-s3"></div>
+    </div>
+
+    <!-- Standby: espacio del anunciante entre inserciones (los slides solo aparecen por cadencia) -->
+    <div class="standby" id="standby">
+      <img src="centauro_logo.jpeg" class="standby-logo" alt="Centauro Ads">
+      <div class="standby-text">ESPACIO DEL ANUNCIANTE</div>
+      <div class="standby-sub">El Mundial vuelve en instantes</div>
+    </div>
+
+    <!-- Full-screen Goal Overlay for high impact on DOOH -->
+    <div class="goal-overlay" id="goal-overlay">
+      <div class="goal-content">
+        <div class="goal-title">¡¡¡GOOOOOL!!!</div>
+        <div class="goal-player-img-wrapper" id="goal-player-img-wrapper">
+          <img src="" alt="Jugador" class="goal-player-img" id="goal-player-img">
+        </div>
+        <div class="goal-details">
+          <span class="goal-player" id="goal-player-name">Jugador</span>
+          <span class="goal-team" id="goal-player-team">Equipo</span>
+          <span class="goal-minute" id="goal-minute-val">90'</span>
+        </div>
+        <div class="goal-score" id="goal-score-new">0 - 0</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Panel de Control de Operador (oculto en modo pura pantalla: ?screen=true) -->
+  <div class="operator-dashboard" id="operator-dashboard">
+    <header class="db-header">
+      <div class="db-brand">
+        <div class="db-logo-wrapper">
+          <img src="centauro_logo.jpeg" class="db-logo-img" alt="Centauro Ads">
+        </div>
+        <div>
+          <span class="db-subtitle">CENTAURO ADS · OPERATOR CONTROL</span>
+          <h1 class="db-title">Transmisión de Métricas en Vivo</h1>
+        </div>
+      </div>
+      <div class="db-header-status">
+        <span class="pulse-indicator"></span>
+        <span class="status-label">Consola de Control Activa</span>
+      </div>
+    </header>
+
+    <div class="db-content">
+      <!-- Columna Izquierda: Ajustes e Inserciones -->
+      <div class="db-column-left">
+        
+        <!-- Tarjeta 1: Configuración de Cadencias (Tiempos) -->
+        <div class="db-card">
+          <h2 class="card-title"><i class="fa-solid fa-clock"></i> Configuración de Cadencias</h2>
+          <form id="config-form" class="db-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="segundos_por_slide">Duración por Slide (segundos)</label>
+                <input type="number" id="segundos_por_slide" min="1" max="60" required>
+              </div>
+              <div class="form-group">
+                <label for="refresco_cada_min">Frecuencia Bloque en Vivo (minutos)</label>
+                <input type="number" id="refresco_cada_min" min="1" max="60" required>
+              </div>
+              <div class="form-group">
+                <label for="anuncio_cada_min">Frecuencia de Antesala (minutos)</label>
+                <input type="number" id="anuncio_cada_min" min="1" max="60" required>
+              </div>
+              <div class="form-group">
+                <label for="ventana_anuncio_seg">Duración de Antesala (segundos)</label>
+                <input type="number" id="ventana_anuncio_seg" min="1" max="120" required>
+              </div>
+              <div class="form-group">
+                <label for="gol_segundos">Duración de Alerta de Gol (segundos)</label>
+                <input type="number" id="gol_segundos" min="1" max="60" required>
+              </div>
+              <div class="form-group">
+                <label for="demo_speed">Velocidad de Demo (Factor)</label>
+                <input type="number" id="demo_speed" min="1" max="100" required>
+              </div>
+            </div>
+            <button type="submit" class="btn-submit" id="btn-save-config"><i class="fa-solid fa-floppy-disk"></i> Guardar Ajustes de Tiempos</button>
+            <div id="save-status" class="status-msg"></div>
+          </form>
+        </div>
+
+        <!-- Tarjeta 2: Slides Habilitados -->
+        <div class="db-card">
+          <h2 class="card-title"><i class="fa-solid fa-layer-group"></i> Slides Activos en Pantalla</h2>
+          <p class="card-desc">Selecciona qué diapositivas del carrusel en vivo deben mostrarse al público.</p>
+          <div class="switches-list">
+            <label class="switch-container">
+              <span class="switch-label">
+                <strong>Slide 1: Marcador / Estrella</strong>
+                <span class="switch-desc">El resultado del partido, reloj en vivo y la estrella del equipo que rota.</span>
+              </span>
+              <div class="switch-wrapper">
+                <input type="checkbox" id="slide_1_enabled" checked>
+                <span class="switch-slider"></span>
+              </div>
+            </label>
+            
+            <label class="switch-container">
+              <span class="switch-label">
+                <strong>Slide 2: Sucesos de Juego</strong>
+                <span class="switch-desc">Tarjetas amarillas y rojas, goles y sustituciones ordenados en vivo.</span>
+              </span>
+              <div class="switch-wrapper">
+                <input type="checkbox" id="slide_2_enabled" checked>
+                <span class="switch-slider"></span>
+              </div>
+            </label>
+            
+            <label class="switch-container">
+              <span class="switch-label">
+                <strong>Slide 3: CTA / Trivia de Votos</strong>
+                <span class="switch-desc">Llamado a la acción con código QR de votaciones y barras dinámicas de MVP.</span>
+              </span>
+              <div class="switch-wrapper">
+                <input type="checkbox" id="slide_3_enabled" checked>
+                <span class="switch-slider"></span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Tarjeta 3: Consola de Simulación -->
+        <div class="db-card">
+          <h2 class="card-title"><i class="fa-solid fa-flask"></i> Consola de Simulación</h2>
+          <p class="card-desc">Fuerza estados de demostración locales en la vista previa para probar flujos.</p>
+          <div class="sim-controls">
+            <div class="form-group select-group">
+              <label for="sim-state-select">Estado del Partido</label>
+              <select id="sim-state-select" class="db-select">
+                <option value="upcoming">Antesala (Flyer programado)</option>
+                <option value="live">Partido en Vivo (Ticking)</option>
+                <option value="goal">¡Simulación de Gol! (Local)</option>
+                <option value="finished">Partido Finalizado (FT)</option>
+                <option value="real">Datos Reales (API Sportmonks)</option>
+              </select>
+            </div>
+            <div class="sim-actions">
+              <button type="button" class="btn-sim-action" id="btn-sim-goal-alert">
+                <i class="fa-solid fa-bullhorn"></i> Forzar Gol de Emergencia (VNNOX)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 5: Gestión de Plantillas (Mockups) -->
+        <div class="db-card">
+          <h2 class="card-title"><i class="fa-solid fa-images"></i> Gestión de Plantillas (Mockups)</h2>
+          <p class="card-desc">Sube, revisa o elimina imágenes de fondo para las simulaciones y la pauta.</p>
+          
+          <!-- Upload Area -->
+          <div class="upload-zone" id="upload-zone">
+            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+            <span class="upload-text" id="upload-prompt-text">Selecciona una imagen (PNG/JPG)</span>
+            <input type="file" id="mockup-file-input" accept="image/png, image/jpeg, image/jpg" style="display: none;">
+            <button type="button" class="btn-upload-trigger" id="btn-upload-trigger">Seleccionar Archivo</button>
+          </div>
+          <div id="upload-status" class="status-msg"></div>
+
+          <!-- Mockup Grid -->
+          <div class="mockups-grid" id="mockups-grid">
+            <div class="loading-mockups">Cargando plantillas...</div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 6: Personalización y Proporciones de Simulación -->
+        <div class="db-card">
+          <h2 class="card-title"><i class="fa-solid fa-sliders"></i> Ajustes de Simulación por Pantalla</h2>
+          <p class="card-desc">Adapta la simulación a la resolución de tu TB60 en VNNOX y edita la información superpuesta.</p>
+          
+          <div class="db-form">
+            <div class="form-group">
+              <label for="select-vnnox-player">Pantalla Autorizada (VNNOX)</label>
+              <select id="select-vnnox-player" class="db-select">
+                <option value="">Cargando pantallas...</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="select-mockup-bg">Imagen de Fondo (Mockup)</label>
+              <select id="select-mockup-bg" class="db-select">
+                <option value="">-- Sin fondo (Solo datos) --</option>
+              </select>
+            </div>
+
+            <!-- Controles de Preset de Resolución e Inputs -->
+            <div class="form-group">
+              <label for="select-resolution-preset">Preset de Resolución de Pantalla</label>
+              <select id="select-resolution-preset" class="db-select">
+                <option value="256x512">256 x 512 px (Lab TB60 - 1:2)</option>
+                <option value="192x384">192 x 384 px (Pequeña - 1:2)</option>
+                <option value="1080x1920">1080 x 1920 px (Vertical - 9:16)</option>
+                <option value="512x512">512 x 512 px (Cuadrada - 1:1)</option>
+                <option value="custom">-- Personalizado --</option>
+              </select>
+            </div>
+            
+            <div class="form-grid" id="custom-res-grid" style="display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+              <div class="form-group">
+                <label for="input-custom-w">Ancho (px)</label>
+                <input type="number" id="input-custom-w" class="db-input" value="256" min="64" max="2160">
+              </div>
+              <div class="form-group">
+                <label for="input-custom-h">Alto (px)</label>
+                <input type="number" id="input-custom-h" class="db-input" value="512" min="64" max="2160">
+              </div>
+            </div>
+
+            <!-- Sliders de Calibración de Mockup -->
+            <h3 class="card-subtitle" style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--brand-purple); margin:14px 0 6px 0; letter-spacing:0.05em;"><i class="fa-solid fa-crop-simple"></i> Calibración del Mockup</h3>
+            
+            <div class="form-group">
+              <label for="slider-offset-x">Desplazamiento X: <span id="val-offset-x">0</span>%</label>
+              <input type="range" id="slider-offset-x" class="db-range" min="0" max="100" value="0">
+            </div>
+            
+            <div class="form-group">
+              <label for="slider-offset-y">Desplazamiento Y: <span id="val-offset-y">0</span>%</label>
+              <input type="range" id="slider-offset-y" class="db-range" min="0" max="100" value="0">
+            </div>
+            
+            <div class="form-group">
+              <label for="slider-width">Ancho de Pantalla Activa: <span id="val-width">100</span>%</label>
+              <input type="range" id="slider-width" class="db-range" min="10" max="100" value="100">
+            </div>
+            
+            <div class="form-group">
+              <label for="slider-height">Alto de Pantalla Activa: <span id="val-height">100</span>%</label>
+              <input type="range" id="slider-height" class="db-range" min="10" max="100" value="100">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 15px;">
+              <label for="select-mockup-fit">Ajuste de Imagen (Mockup)</label>
+              <select id="select-mockup-fit" class="db-select">
+                <option value="cover">Ajuste Cover (Recortar para llenar)</option>
+                <option value="contain">Ajuste Contain (Completo con bandas)</option>
+                <option value="100% 100%">Ajuste Stretch (Estirar al 100%)</option>
+              </select>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="edit-sim-home-name">Equipo Local</label>
+                <input type="text" id="edit-sim-home-name" class="db-input" value="LOCAL">
+              </div>
+              <div class="form-group">
+                <label for="edit-sim-away-name">Equipo Visitante</label>
+                <input type="text" id="edit-sim-away-name" class="db-input" value="VISITANTE">
+              </div>
+              <div class="form-group">
+                <label for="edit-sim-home-score">Goles Local</label>
+                <input type="number" id="edit-sim-home-score" class="db-input" value="2" min="0">
+              </div>
+              <div class="form-group">
+                <label for="edit-sim-away-score">Goles Visitante</label>
+                <input type="number" id="edit-sim-away-score" class="db-input" value="1" min="0">
+              </div>
+              <div class="form-group">
+                <label for="edit-sim-clock">Minuto de Partido</label>
+                <input type="text" id="edit-sim-clock" class="db-input" value="78'">
+              </div>
+              <div class="form-group">
+                <label for="edit-sim-status">Estatus</label>
+                <input type="text" id="edit-sim-status" class="db-input" value="PARTIDO EN VIVO">
+              </div>
+            </div>
+
+            <h3 class="card-subtitle" style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--c-primary); margin:14px 0 6px 0; letter-spacing:0.05em;"><i class="fa-solid fa-star"></i> Estrellas de Simulación</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="edit-sim-home-star-name">Estrella Local</label>
+                <input type="text" id="edit-sim-home-star-name" class="db-input" value="Granit Xhaka">
+              </div>
+              <div class="form-group">
+                <label for="edit-sim-home-star-img">URL Foto Estrella Local</label>
+                <input type="text" id="edit-sim-home-star-img" class="db-input" value="https://cdn.sportmonks.com/images/soccer/players/24/2040.png">
+              </div>
+              <div class="form-group">
+                <label for="edit-sim-away-star-name">Estrella Visitante</label>
+                <input type="text" id="edit-sim-away-star-name" class="db-input" value="Riyad Mahrez">
+              </div>
+              <div class="form-group">
+                <label for="edit-sim-away-star-img">URL Foto Estrella Visitante</label>
+                <input type="text" id="edit-sim-away-star-img" class="db-input" value="https://cdn.sportmonks.com/images/soccer/players/11/971.png">
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top:10px;">
+              <label for="edit-sim-event-text">Sucesos Recientes (Texto)</label>
+              <input type="text" id="edit-sim-event-text" class="db-input" value="Gol de Baghdad Bounedjah (Argelia) al minuto 58'">
+            </div>
+
+            <!-- Checkboxes to show/hide overlay components -->
+            <div class="checkbox-group">
+              <label class="checkbox-container">
+                <input type="checkbox" id="chk-show-header" checked> Ver cintillo superior (Logo/Estado)
+              </label>
+              <label class="checkbox-container">
+                <input type="checkbox" id="chk-show-scoreboard" checked> Ver marcador (Equipos/Flags/Goles)
+              </label>
+              <label class="checkbox-container">
+                <input type="checkbox" id="chk-show-events" checked> Ver sucesos de juego
+              </label>
+              <label class="checkbox-container">
+                <input type="checkbox" id="chk-show-cta" checked> Ver sección CTA (Votaciones QR)
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 4: Publicación a Pantalla (VNNOX) (Moved to bottom) -->
+        <div class="db-card">
+          <h2 class="card-title"><i class="fa-solid fa-cloud-arrow-up"></i> Conexión e Inserción VNNOX</h2>
+          <div class="publish-section">
+            <div class="vnnox-meta-box" id="vnnox-meta-info">
+              <div class="vnnox-meta-row">
+                <span class="vnnox-label">Estatus Abierto:</span>
+                <span class="vnnox-val" id="vnnox-status-val">Cargando...</span>
+              </div>
+            </div>
+            <button class="btn-publish-db" id="btn-publish-vnnox">
+              <i class="fa-solid fa-play"></i> PUBLICAR PROGRAMA EN PANTALLA (TB60)
+            </button>
+            <div class="publish-status-db" id="publish-status-db">Listo para publicar.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Columna Derecha: Vista Previa Vertical / Simulador -->
+      <div class="db-column-right">
+        <div class="totem-wrapper">
+          <div class="totem-header-tabs">
+            <button class="totem-tab active" id="tab-totem-app"><i class="fa-solid fa-play"></i> Vista App</button>
+            <button class="totem-tab" id="tab-totem-sim"><i class="fa-solid fa-wand-magic-sparkles"></i> Simulación</button>
+            <button class="totem-tab" id="tab-totem-cal"><i class="fa-solid fa-calendar-days"></i> Calendario</button>
+          </div>
+          
+          <!-- Contenedor 1: Vista App (El iframe tradicional) -->
+          <div class="totem-bezel" id="bezel-app-view">
+            <iframe id="preview-iframe" src="about:blank" class="totem-iframe"></iframe>
+            <div class="totem-camera"></div>
+          </div>
+
+          <!-- Contenedor 3: Vista Calendario -->
+          <div class="totem-bezel-cal" id="bezel-cal-view" style="display: none;">
+            <iframe id="calendar-iframe" src="calendar.html" class="totem-iframe"></iframe>
+            <div class="totem-camera"></div>
+            <button class="open-external-btn" id="btn-open-external-cal" title="Abrir Calendario Completo" type="button">
+              <i class="fa-solid fa-up-right-from-square"></i>
+            </button>
+          </div>
+          
+          <!-- Contenedor 2: Vista Simulada (Con la resolucion y mockups de VNNOX) -->
+          <div class="totem-bezel-sim" id="bezel-sim-view" style="display: none;">
+            <div class="sim-screen-container" id="sim-screen">
+              <!-- La imagen de mockup seleccionada irá de fondo aquí -->
+              
+              <!-- Wrapper para calibración del área activa (LED) del mockup -->
+              <div id="sim-overlay-wrapper">
+                <!-- Overlays de información editables -->
+                <div class="sim-overlay-element sim-header" id="sim-overlay-header">
+                  <img src="centauro_logo.jpeg" class="sim-logo" alt="Centauro Logo">
+                  <div class="sim-badge"><span class="sim-dot"></span> <span id="val-sim-status">EN VIVO</span></div>
+                </div>
+                
+                <div class="sim-overlay-element sim-scoreboard" id="sim-overlay-scoreboard">
+                  <div class="sim-team sim-home">
+                    <div class="sim-flip-container flip-container" id="sim-home-flipper-container">
+                      <div class="flipper sim-flipper" id="sim-home-flipper">
+                        <div class="front">
+                          <img src="https://cdn.sportmonks.com/images/countries/png/short/jo.png" id="val-sim-home-flag" class="sim-flag">
+                        </div>
+                        <div class="back">
+                          <div class="sim-star-card">
+                            <img src="" id="val-sim-home-star-img" class="sim-star-img">
+                            <div class="sim-star-name" id="val-sim-home-star-name">Estrella</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="sim-team-name" id="val-sim-home-name">LOCAL</div>
+                  </div>
+                  <div class="sim-center">
+                    <div class="sim-clock" id="val-sim-clock">78'</div>
+                    <div class="sim-score"><span id="val-sim-home-score">2</span>:<span id="val-sim-away-score">1</span></div>
+                  </div>
+                  <div class="sim-team sim-away">
+                    <div class="sim-flip-container flip-container" id="sim-away-flipper-container">
+                      <div class="flipper sim-flipper" id="sim-away-flipper">
+                        <div class="front">
+                          <img src="https://cdn.sportmonks.com/images/countries/png/short/dz.png" id="val-sim-away-flag" class="sim-flag">
+                        </div>
+                        <div class="back">
+                          <div class="sim-star-card">
+                            <img src="" id="val-sim-away-star-img" class="sim-star-img">
+                            <div class="sim-star-name" id="val-sim-away-star-name">Estrella</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="sim-team-name" id="val-sim-away-name">VISITANTE</div>
+                  </div>
+                </div>
+                
+                <div class="sim-overlay-element sim-event-bar" id="sim-overlay-event">
+                  <div class="sim-event-title">SUCESO RECIENTE</div>
+                  <div class="sim-event-desc"><span id="val-sim-event-text">Gol de Baghdad Bounedjah (Argelia) al minuto 58'</span></div>
+                </div>
+                
+                <div class="sim-overlay-element sim-cta-box" id="sim-overlay-cta">
+                  <div class="sim-cta-text">VOTA POR EL MVP DEL PARTIDO</div>
+                  <div class="sim-cta-sub">Escanea el código QR para participar</div>
+                  <div class="sim-qr-wrapper">
+                    <svg class="sim-qr-code-svg" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31 31" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h31v31H0z"/><path stroke="#1a0b33" d="M1 1.5h7m1 0h1m1 0h2m1 0h1m3 0h2m3 0h7M1 2.5h1m5 0h1m1 0h1m3 0h1m1 0h1m2 0h4m1 0h1m5 0h1M1 3.5h1m1 0h3m1 0h1m1 0h1m2 0h5m4 0h1m1 0h1m1 0h3m1 0h1M1 4.5h1m1 0h3m1 0h1m2 0h3m2 0h1m1 0h2m1 0h2m1 0h1m1 0h3m1 0h1M1 5.5h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h3m1 0h1m1 0h3m1 0h1m1 0h3m1 0h1M1 6.5h1m5 0h1m2 0h6m5 0h1m1 0h1m5 0h1M1 7.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M10 8.5h1m1 0h1m2 0h1m4 0h1M1 9.5h1m2 0h6m2 0h1m1 0h5m3 0h1m2 0h1m1 0h3M1 10.5h1m1 0h1m2 0h1m3 0h1m1 0h1m2 0h2m1 0h3m3 0h2m1 0h2M2 11.5h1m1 0h1m1 0h2m1 0h2m1 0h1m2 0h4m3 0h3m2 0h1M2 12.5h1m1 0h1m1 0h1m1 0h1m2 0h1m1 0h2m1 0h1m3 0h2m2 0h1m2 0h1M2 13.5h1m1 0h2m1 0h1m1 0h2m1 0h4m1 0h1m1 0h3m1 0h2m4 0h1M3 14.5h1m1 0h1m3 0h2m5 0h4m3 0h1m1 0h5M1 15.5h2m4 0h3m1 0h1m1 0h1m1 0h4m1 0h1m3 0h1m2 0h1m1 0h1M4 16.5h3m2 0h1m1 0h7m2 0h2m2 0h2m1 0h1m1 0h1M1 17.5h1m2 0h1m1 0h3m1 0h2m1 0h1m2 0h2m8 0h1M1 18.5h2m2 0h2m2 0h2m1 0h1m3 0h1m1 0h5m2 0h1m1 0h2M1 19.5h5m1 0h1m5 0h4m2 0h2m1 0h2m2 0h1m2 0h1M1 20.5h2m1 0h3m3 0h2m2 0h1m2 0h1m4 0h6M1 21.5h2m1 0h1m2 0h1m1 0h1m4 0h1m1 0h1m1 0h1m1 0h9M9 22.5h6m1 0h1m2 0h1m1 0h1m3 0h2M1 23.5h7m1 0h2m1 0h1m1 0h1m1 0h3m1 0h2m1 0h1m1 0h2M1 24.5h1m5 0h1m1 0h4m1 0h1m2 0h2m1 0h2m3 0h1m2 0h2M1 25.5h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h2m1 0h2m2 0h7m2 0h1M1 26.5h1m1 0h3m1 0h1m1 0h3m1 0h1m1 0h5m1 0h2m1 0h1m4 0h1M1 27.5h1m1 0h3m1 0h1m3 0h3m1 0h4m1 0h1m3 0h2m1 0h3M1 28.5h1m5 0h1m3 0h3m5 0h1m2 0h3m1 0h2m1 0h1M1 29.5h7m1 0h1m1 0h1m2 0h4m2 0h3m2 0h2"/></svg>
+                  </div>
+                </div>
+                
+                <!-- Simulated Goal Overlay -->
+                <div class="sim-overlay-element sim-goal-overlay" id="sim-overlay-goal" style="display: none;">
+                  <div class="sim-goal-content">
+                    <div class="sim-goal-title">¡¡¡GOOOOOL!!!</div>
+                    <div class="sim-goal-player-wrapper">
+                      <img src="" class="sim-goal-player-img" id="val-sim-goal-player-img">
+                    </div>
+                    <div class="sim-goal-details">
+                      <span class="sim-goal-player" id="val-sim-goal-player-name">Jugador</span>
+                      <span class="sim-goal-team" id="val-sim-goal-player-team">Equipo</span>
+                      <span class="sim-goal-minute" id="val-sim-goal-minute-val">90'</span>
+                    </div>
+                    <div class="sim-goal-score" id="val-sim-goal-score-new">0 - 0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="totem-camera"></div>
+          </div>
+          
+          <div class="totem-base"></div>
+          <div class="resolution-indicator" id="val-resolution-indicator">Resolución: -- x -- px</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js?v=20260624_06"></script>
+</body>
+</html>
