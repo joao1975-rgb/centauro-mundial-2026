@@ -146,6 +146,20 @@ async function syncMatches() {
   
   console.log(`📋 Found ${res.data.length} matches in API range.`);
   
+  // Fetch all matches from Firestore once to match in-memory and save thousands of read operations
+  console.log('🔄 Fetching all matches from Firestore...');
+  let firestoreMatches = [];
+  try {
+    const snap = await db.collection('matches').get();
+    snap.forEach(doc => {
+      firestoreMatches.push({ id: doc.id, ...doc.data() });
+    });
+    console.log(`✅ Loaded ${firestoreMatches.length} matches from Firestore.`);
+  } catch (e) {
+    console.error('❌ Error fetching matches from Firestore:', e.message);
+    return;
+  }
+  
   let updated = 0;
   
   for (const fixture of res.data) {
@@ -163,33 +177,27 @@ async function syncMatches() {
     let swap = false;
     let groupLetter = null;
     
-    // Try to match based on team names against our groups database
-    // We check all groups matching home/away teams
-    for (const [group, candidates] of Object.entries(GROUP_MATCH_IDS)) {
-      for (const cid of candidates) {
-        try {
-          const docSnap = await db.collection('matches').doc(cid).get();
-          if (docSnap.exists) {
-            const data = docSnap.data();
-            const t1 = data.t1 || '';
-            const t2 = data.t2 || '';
-            
-            if (norm(t1) === norm(homeEs) && norm(t2) === norm(awayEs)) {
-              matchId = cid;
-              swap = false;
-              groupLetter = group;
-              break;
-            }
-            if (norm(t1) === norm(awayEs) && norm(t2) === norm(homeEs)) {
-              matchId = cid;
-              swap = true;
-              groupLetter = group;
-              break;
-            }
-          }
-        } catch (e) {}
+    // Match against Firestore matches loaded in-memory
+    for (const fm of firestoreMatches) {
+      const t1 = fm.t1 || '';
+      const t2 = fm.t2 || '';
+      
+      // Match candidate list for safety: only match if fm.id is in our expected GROUP_MATCH_IDS structure
+      const isExpectedGroupMatch = Object.values(GROUP_MATCH_IDS).some(cids => cids.includes(fm.id));
+      if (!isExpectedGroupMatch) continue;
+      
+      if (norm(t1) === norm(homeEs) && norm(t2) === norm(awayEs)) {
+        matchId = fm.id;
+        swap = false;
+        groupLetter = (fm.g || '').replace('Grupo ', '').trim();
+        break;
       }
-      if (matchId) break;
+      if (norm(t1) === norm(awayEs) && norm(t2) === norm(homeEs)) {
+        matchId = fm.id;
+        swap = true;
+        groupLetter = (fm.g || '').replace('Grupo ', '').trim();
+        break;
+      }
     }
     
     if (!matchId) {
